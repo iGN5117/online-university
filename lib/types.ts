@@ -1,0 +1,81 @@
+// Shared domain types. The DB stores lecture content and question options as JSON text;
+// lib/data.ts parses them into these shapes before they reach UI or agent code.
+
+export type LectureFormat = "cards" | "reading" | "video" | "game";
+
+export interface School {
+  id: number;
+  name: string;
+  slug: string;
+  emoji: string;
+  description: string;
+  classCount: number;
+}
+
+export interface ClassRow {
+  id: number;
+  school_id: number;
+  name: string;
+  slug: string;
+  emoji: string;
+  description: string;
+  lectureCount: number;
+  completedCount: number;
+}
+
+export interface Card {
+  front: string; // concept / question side — keep short, one idea per card
+  back: string; // explanation side — 2-4 sentences max
+  example?: string; // real-world example or use-case
+}
+
+export interface LectureContent {
+  cards?: Card[]; // format === "cards"
+  body_md?: string; // format === "reading"
+  url?: string; // format === "video"
+  html?: string; // format === "game" (self-contained interactive snippet)
+  notes?: string;
+}
+
+export interface Lecture {
+  id: number;
+  class_id: number;
+  title: string;
+  format: LectureFormat;
+  position: number;
+  summary: string;
+  content: LectureContent;
+  completed: boolean;
+  questionCount: number;
+}
+
+export interface Question {
+  id: number;
+  lecture_id: number;
+  prompt: string;
+  options: string[];
+  answer_index: number;
+  explanation: string;
+}
+
+export interface TestAttempt {
+  id: number;
+  class_id: number;
+  score: number;
+  total: number;
+  taken_at: string;
+}
+
+// Input shapes used by the companion agent and seed data
+export interface NewCard {
+  front: string;
+  back: string;
+  example?: string;
+}
+
+export interface NewQuestion {
+  prompt: string;
+  options: string[];
+  answer_index: number;
+  explanation: string;
+}
