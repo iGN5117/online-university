@@ -1,7 +1,13 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import { getLecture, getClass, listLectures } from "@/lib/data";
 import CardViewer from "@/components/CardViewer";
+import TeacherChat from "@/components/TeacherChat";
 
 export const dynamic = "force-dynamic";
 
@@ -26,50 +32,67 @@ export default async function LecturePage({
   // Get all lectures in this class to find next/prev
   const classLectures = listLectures(lecture.class_id);
   const currentIndex = classLectures.findIndex((l) => l.id === numId);
-  const nextLecture = currentIndex >= 0 && currentIndex < classLectures.length - 1
-    ? classLectures[currentIndex + 1]
-    : null;
+  const nextLecture =
+    currentIndex >= 0 && currentIndex < classLectures.length - 1
+      ? classLectures[currentIndex + 1]
+      : null;
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Breadcrumb */}
-      <nav className="text-sm text-foreground/60">
-        <Link href="/" className="hover:text-foreground transition-colors">
+    <>
+    <Stack spacing={3}>
+      <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+        <MuiLink href="/" underline="hover" color="text.secondary">
           Home
-        </Link>
-        <span className="mx-2">/</span>
-        <Link
+        </MuiLink>
+        <MuiLink
           href={`/class/${lecture.class_id}`}
-          className="hover:text-foreground transition-colors"
+          underline="hover"
+          color="text.secondary"
         >
           {cls.name}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">{lecture.title}</span>
-      </nav>
+        </MuiLink>
+        <Typography color="text.primary" sx={{ fontSize: "0.875rem" }}>
+          {lecture.title}
+        </Typography>
+      </Breadcrumbs>
 
-      {/* Render based on format */}
       {lecture.format === "reading" && lecture.content.body_md ? (
-        <div className="prose dark:prose-invert prose-sm md:prose-base max-w-none">
-          {lecture.content.body_md.split("\n").map((para, i) => (
-            para.trim() && (
-              <p key={i} className="text-base md:text-lg leading-relaxed text-foreground/90 mb-4">
-                {para}
-              </p>
-            )
-          ))}
-        </div>
+        <Stack spacing={2}>
+          {lecture.content.body_md.split("\n").map(
+            (para, i) =>
+              para.trim() && (
+                <Typography
+                  key={i}
+                  sx={{ fontSize: "1.0625rem", lineHeight: 1.7 }}
+                  color="text.primary"
+                >
+                  {para}
+                </Typography>
+              ),
+          )}
+        </Stack>
       ) : lecture.format === "video" && lecture.content.url ? (
-        <div className="rounded-2xl overflow-hidden border border-black/10 dark:border-white/15">
-          <a
+        <Paper variant="outlined" sx={{ overflow: "hidden" }}>
+          <Box
+            component="a"
             href={lecture.content.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block aspect-video bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              aspectRatio: "16 / 9",
+              bgcolor: "action.hover",
+              fontSize: "2.25rem",
+              textDecoration: "none",
+              transition: "background-color 0.2s",
+              "&:hover": { bgcolor: "action.selected" },
+            }}
           >
-            <span className="text-4xl">▶️</span>
-          </a>
-        </div>
+            ▶️
+          </Box>
+        </Paper>
       ) : (
         <CardViewer
           lecture={lecture}
@@ -77,6 +100,8 @@ export default async function LecturePage({
           nextLectureId={nextLecture?.id}
         />
       )}
-    </div>
+    </Stack>
+    <TeacherChat lectureId={lecture.id} lectureTitle={lecture.title} />
+    </>
   );
 }

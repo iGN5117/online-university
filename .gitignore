@@ -42,3 +42,7 @@ next-env.d.ts
 
 # local database
 data/
+
+# graphify transient artifacts
+graphify-out/cache/
+graphify-out/.rebuild.lock

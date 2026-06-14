@@ -1,5 +1,11 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import { getClass, getTestQuestions, listTestAttempts } from "@/lib/data";
 import TestRunner from "@/components/TestRunner";
 
@@ -25,72 +31,69 @@ export default async function TestPage({
   const shuffled = [...questions].sort(() => Math.random() - 0.5).slice(0, 10);
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Breadcrumb */}
-      <nav className="text-sm text-foreground/60">
-        <Link href="/" className="hover:text-foreground transition-colors">
+    <Stack spacing={4}>
+      <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+        <MuiLink href="/" underline="hover" color="text.secondary">
           Home
-        </Link>
-        <span className="mx-2">/</span>
-        <Link
+        </MuiLink>
+        <MuiLink
           href={`/class/${classId}`}
-          className="hover:text-foreground transition-colors"
+          underline="hover"
+          color="text.secondary"
         >
           {cls.name}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">Test</span>
-      </nav>
+        </MuiLink>
+        <Typography color="text.primary" sx={{ fontSize: "0.875rem" }}>
+          Test
+        </Typography>
+      </Breadcrumbs>
 
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          📝 Test: {cls.name}
-        </h1>
-      </div>
+      <Typography variant="h3" sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}>
+        📝 Test: {cls.name}
+      </Typography>
 
-      {/* Content */}
       {shuffled.length === 0 ? (
-        <div className="rounded-2xl border border-black/10 dark:border-white/15 p-8 bg-black/[.03] dark:bg-white/[.06] text-center">
-          <p className="text-lg text-foreground/70">
+        <Paper variant="outlined" sx={{ p: 4, textAlign: "center" }}>
+          <Typography color="text.secondary" sx={{ fontSize: "1.125rem", mb: 2 }}>
             Nothing to test yet — complete a lecture first.
-          </p>
-          <Link
-            href={`/class/${classId}`}
-            className="inline-block mt-4 rounded-2xl bg-black dark:bg-white text-white dark:text-black px-6 py-2 font-semibold hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
+          </Typography>
+          <Button href={`/class/${classId}`} variant="contained">
             Back to class
-          </Link>
-        </div>
+          </Button>
+        </Paper>
       ) : (
-        <div className="flex flex-col gap-8">
+        <Stack spacing={4}>
           <TestRunner classId={classId} questions={shuffled} />
 
-          {/* Past attempts section */}
           {attempts.length > 0 && (
-            <div className="flex flex-col gap-4">
-              <h2 className="text-2xl font-bold">Past attempts</h2>
-              <div className="flex flex-col gap-2">
+            <Stack spacing={2}>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                Past attempts
+              </Typography>
+              <Stack spacing={1}>
                 {attempts.map((attempt) => (
-                  <div
-                    key={attempt.id}
-                    className="rounded-2xl border border-black/10 dark:border-white/15 p-4 bg-black/[.03] dark:bg-white/[.06]"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">
+                  <Paper key={attempt.id} variant="outlined" sx={{ p: 2 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
                         {attempt.score}/{attempt.total}
-                      </span>
-                      <span className="text-sm text-foreground/60">
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
                         {new Date(attempt.taken_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
+                      </Typography>
+                    </Box>
+                  </Paper>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
-        </div>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 }

@@ -1,5 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
 import { getSchool, listClasses } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -20,52 +27,73 @@ export default async function SchoolPage({
   const classes = listClasses(numId);
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Breadcrumb */}
-      <nav className="text-sm text-foreground/60">
-        <Link href="/" className="hover:text-foreground transition-colors">
+    <Stack spacing={4}>
+      <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+        <MuiLink href="/" underline="hover" color="text.secondary">
           Home
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">{school.name}</span>
-      </nav>
-
-      {/* School header */}
-      <div className="flex flex-col gap-2">
-        <div className="text-4xl">{school.emoji}</div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+        </MuiLink>
+        <Typography color="text.primary" sx={{ fontSize: "0.875rem" }}>
           {school.name}
-        </h1>
-        <p className="text-lg text-foreground/70">{school.description}</p>
-      </div>
+        </Typography>
+      </Breadcrumbs>
 
-      {/* Classes grid or empty state */}
+      <Stack spacing={1}>
+        <Typography sx={{ fontSize: "2.25rem", lineHeight: 1 }}>
+          {school.emoji}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}>
+          {school.name}
+        </Typography>
+        <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+          {school.description}
+        </Typography>
+      </Stack>
+
       {classes.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg text-foreground/70 mb-4">
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
             No classes yet — ask the companion (✨ bottom-right) to add one.
-          </p>
-        </div>
+          </Typography>
+        </Box>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Box
+          sx={{
+            display: "grid",
+            gap: 2,
+            gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
+          }}
+        >
           {classes.map((cls) => (
-            <Link
-              key={cls.id}
-              href={`/class/${cls.id}`}
-              className="rounded-2xl border border-black/10 dark:border-white/15 p-6 hover:shadow-md hover:-translate-y-0.5 transition-all bg-white dark:bg-black/30"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="text-3xl">{cls.emoji}</div>
-                <h2 className="font-semibold text-lg">{cls.name}</h2>
-                <p className="text-sm text-foreground/70">{cls.description}</p>
-                <div className="text-xs font-medium text-foreground/60 mt-2">
-                  {cls.completedCount}/{cls.lectureCount} lectures
-                </div>
-              </div>
-            </Link>
+            <Card key={cls.id} variant="outlined" sx={{ height: "100%" }}>
+              <CardActionArea
+                href={`/class/${cls.id}`}
+                sx={{ height: "100%" }}
+              >
+                <CardContent>
+                  <Stack spacing={1.5}>
+                    <Typography sx={{ fontSize: "1.875rem", lineHeight: 1 }}>
+                      {cls.emoji}
+                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      {cls.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {cls.description}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 600, pt: 1 }}
+                    >
+                      {cls.completedCount}/{cls.lectureCount} lectures
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </CardActionArea>
+            </Card>
           ))}
-        </div>
+        </Box>
       )}
-    </div>
+    </Stack>
   );
 }

@@ -3,6 +3,8 @@
 
 export type LectureFormat = "cards" | "reading" | "video" | "game";
 
+export type Difficulty = "Beginner" | "Intermediate" | "Advanced" | "Expert";
+
 export interface School {
   id: number;
   name: string;
@@ -27,6 +29,7 @@ export interface Card {
   front: string; // concept / question side — keep short, one idea per card
   back: string; // explanation side — 2-4 sentences max
   example?: string; // real-world example or use-case
+  diagram?: string; // optional inline SVG that visually explains the concept
 }
 
 export interface LectureContent {
@@ -35,6 +38,8 @@ export interface LectureContent {
   url?: string; // format === "video"
   html?: string; // format === "game" (self-contained interactive snippet)
   notes?: string;
+  rationale?: string; // why/for-whom this lecture was created (teacher-agent context)
+  difficulty?: Difficulty; // beginner→expert level, shown as a chip and used by "go deeper"
 }
 
 export interface Lecture {
@@ -71,6 +76,7 @@ export interface NewCard {
   front: string;
   back: string;
   example?: string;
+  diagram?: string;
 }
 
 export interface NewQuestion {

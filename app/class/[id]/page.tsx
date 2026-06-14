@@ -1,6 +1,19 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import Chip from "@mui/material/Chip";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { getClass, getSchool, listLectures } from "@/lib/data";
+import DeepenButton from "@/components/DeepenButton";
 
 export const dynamic = "force-dynamic";
 
@@ -19,119 +32,141 @@ export default async function ClassPage({
 
   const school = getSchool(cls.school_id);
   const lectures = listLectures(numId);
+  const progress =
+    cls.lectureCount > 0 ? (cls.completedCount / cls.lectureCount) * 100 : 0;
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Breadcrumb */}
-      <nav className="text-sm text-foreground/60">
-        <Link href="/" className="hover:text-foreground transition-colors">
+    <Stack spacing={4}>
+      <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+        <MuiLink href="/" underline="hover" color="text.secondary">
           Home
-        </Link>
-        <span className="mx-2">/</span>
+        </MuiLink>
         {school && (
-          <>
-            <Link
-              href={`/school/${school.id}`}
-              className="hover:text-foreground transition-colors"
-            >
-              {school.name}
-            </Link>
-            <span className="mx-2">/</span>
-          </>
+          <MuiLink
+            href={`/school/${school.id}`}
+            underline="hover"
+            color="text.secondary"
+          >
+            {school.name}
+          </MuiLink>
         )}
-        <span className="text-foreground">{cls.name}</span>
-      </nav>
-
-      {/* Class header */}
-      <div className="flex flex-col gap-2">
-        <div className="text-4xl">{cls.emoji}</div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+        <Typography color="text.primary" sx={{ fontSize: "0.875rem" }}>
           {cls.name}
-        </h1>
-        <p className="text-lg text-foreground/70">{cls.description}</p>
-      </div>
+        </Typography>
+      </Breadcrumbs>
 
-      {/* Progress bar */}
-      <div className="flex flex-col gap-2">
-        <div className="text-sm font-medium text-foreground/70">
+      <Stack spacing={1}>
+        <Typography sx={{ fontSize: "2.25rem", lineHeight: 1 }}>
+          {cls.emoji}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}>
+          {cls.name}
+        </Typography>
+        <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+          {cls.description}
+        </Typography>
+      </Stack>
+
+      <Stack spacing={1}>
+        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
           Progress: {cls.completedCount} / {cls.lectureCount} lectures
-        </div>
-        <div className="h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-black dark:bg-white transition-all"
-            style={{
-              width: `${cls.lectureCount > 0 ? (cls.completedCount / cls.lectureCount) * 100 : 0}%`,
-            }}
-          />
-        </div>
-      </div>
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{ height: 8, borderRadius: 999 }}
+        />
+      </Stack>
 
-      {/* Lectures list or empty state */}
       {lectures.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg text-foreground/70">No lectures yet.</p>
-        </div>
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+            No lectures yet.
+          </Typography>
+        </Box>
       ) : (
-        <div className="flex flex-col gap-3">
+        <Stack spacing={1.5}>
           {lectures.map((lecture, index) => (
-            <Link
-              key={lecture.id}
-              href={`/lecture/${lecture.id}`}
-              className="rounded-2xl border border-black/10 dark:border-white/15 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all bg-white dark:bg-black/30"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-semibold text-foreground/60">
-                      {index + 1}.
-                    </span>
-                    <h3 className="font-semibold text-lg">{lecture.title}</h3>
-                  </div>
-                  <p className="text-sm text-foreground/70 mt-1">
-                    {lecture.summary}
-                  </p>
-                  <div className="text-xs text-foreground/60 mt-2">
-                    {lecture.content.cards?.length || 0} cards
-                  </div>
-                </div>
-                {lecture.completed && (
-                  <div className="text-xl" title="Completed">
-                    ✓
-                  </div>
-                )}
-              </div>
-            </Link>
+            <Card key={lecture.id} variant="outlined">
+              <CardActionArea href={`/lecture/${lecture.id}`}>
+                <CardContent>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ justifyContent: "space-between", alignItems: "flex-start" }}
+                  >
+                    <Box sx={{ flex: 1 }}>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: "baseline" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          {index + 1}.
+                        </Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          {lecture.title}
+                        </Typography>
+                      </Stack>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.5 }}
+                      >
+                        {lecture.summary}
+                      </Typography>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ alignItems: "center", mt: 1 }}
+                      >
+                        <Typography variant="caption" color="text.secondary">
+                          {lecture.content.cards?.length || 0} cards
+                        </Typography>
+                        {lecture.content.difficulty && (
+                          <Chip
+                            label={lecture.content.difficulty}
+                            size="small"
+                            variant="outlined"
+                            color="secondary"
+                          />
+                        )}
+                      </Stack>
+                    </Box>
+                    {lecture.completed && (
+                      <CheckCircleIcon color="primary" titleAccess="Completed" />
+                    )}
+                  </Stack>
+                </CardContent>
+              </CardActionArea>
+            </Card>
           ))}
-        </div>
+        </Stack>
       )}
 
-      {/* Test button */}
-      <div className="mt-4">
-        {cls.completedCount === 0 ? (
-          // Disabled: render a non-interactive element (a server component
-          // cannot pass an onClick handler to <Link>).
-          <span
-            aria-disabled="true"
-            title="Complete a lecture first"
-            className="inline-block rounded-2xl px-6 py-3 font-semibold bg-black/10 dark:bg-white/10 text-foreground/50 cursor-not-allowed select-none"
-          >
-            📝 Take a test
-          </span>
-        ) : (
-          <Link
-            href={`/class/${numId}/test`}
-            title="Take a test on completed lectures"
-            className="inline-block rounded-2xl px-6 py-3 font-semibold transition-all bg-black dark:bg-white text-white dark:text-black hover:shadow-md hover:-translate-y-0.5"
-          >
-            📝 Take a test
-          </Link>
-        )}
-        {cls.completedCount === 0 && (
-          <p className="text-xs text-foreground/60 mt-2">
-            Complete a lecture first
-          </p>
-        )}
-      </div>
-    </div>
+      <Box>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap", gap: 2 }}>
+          <DeepenButton classId={numId} mode="refresh" label="✨ Go deeper" />
+          {cls.completedCount === 0 ? (
+            <Tooltip title="Complete a lecture first">
+              <span>
+                <Button variant="outlined" size="large" disabled>
+                  📝 Take a test
+                </Button>
+              </span>
+            </Tooltip>
+          ) : (
+            <Button href={`/class/${numId}/test`} variant="outlined" size="large">
+              📝 Take a test
+            </Button>
+          )}
+        </Stack>
+        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
+          {cls.completedCount === 0
+            ? "Complete a lecture to unlock the test."
+            : "Add the next, harder lesson — or test what you know."}
+        </Typography>
+      </Box>
+    </Stack>
   );
 }

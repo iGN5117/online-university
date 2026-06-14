@@ -3,6 +3,20 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Fab from "@mui/material/Fab";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from "@mui/icons-material/Send";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import Tooltip from "@mui/material/Tooltip";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -10,7 +24,7 @@ interface ChatMessage {
 }
 
 interface Action {
-  kind: "school" | "class" | "lecture" | "cards";
+  kind: "school" | "class" | "lecture" | "cards" | "moved" | "deleted";
   id: number;
   label: string;
 }
@@ -60,10 +74,7 @@ export default function AgentChat() {
 
   // Persist state to sessionStorage
   useEffect(() => {
-    sessionStorage.setItem(
-      "agent-chat",
-      JSON.stringify({ messages, isOpen })
-    );
+    sessionStorage.setItem("agent-chat", JSON.stringify({ messages, isOpen }));
   }, [messages, isOpen]);
 
   // Auto-scroll to bottom on new messages
@@ -137,163 +148,246 @@ export default function AgentChat() {
     }
   };
 
-  const handleStarterClick = (suggestion: string) => {
-    handleSendMessage(suggestion);
+  const handleReset = () => {
+    setMessages([]);
+    setError(null);
+    setInputValue("");
   };
 
+  // Returns a clickable chip target, or null for actions with no page to link
+  // to (e.g. a deleted lecture).
   const getActionLink = (action: Action) => {
-    const baseUrl = action.kind === "school"
-      ? `/school/${action.id}`
-      : action.kind === "class"
-      ? `/class/${action.id}`
-      : `/lecture/${action.id}`;
+    if (action.kind === "deleted") return null;
+    const url =
+      action.kind === "school"
+        ? `/school/${action.id}`
+        : action.kind === "class"
+          ? `/class/${action.id}`
+          : `/lecture/${action.id}`;
 
-    const emoji = action.kind === "school"
-      ? "🏛"
-      : action.kind === "class"
-      ? "📚"
-      : "🃏";
+    const emoji =
+      action.kind === "school" ? "🏛" : action.kind === "class" ? "📚" : "🃏";
 
-    return { url: baseUrl, emoji, label: action.label };
+    return { url, emoji, label: action.label };
   };
 
   // Collapsed state - floating action button
   if (!isOpen) {
     return (
-      <button
+      <Fab
+        color="primary"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full shadow-lg bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
+        variant="extended"
         aria-label="Open Course Builder"
+        sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 1300 }}
       >
-        <span className="text-xl">✨</span>
-        <span className="hidden sm:inline ml-2 text-sm font-medium">Learn something</span>
-      </button>
+        <AutoAwesomeIcon sx={{ mr: { xs: 0, sm: 1 } }} />
+        <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+          Learn something
+        </Box>
+      </Fab>
     );
   }
 
   // Open state - full chat panel
   return (
-    <div className="fixed bottom-5 right-5 z-50 w-[min(24rem,calc(100vw-2.5rem))] h-[min(34rem,70vh)] rounded-2xl border border-black/10 dark:border-white/15 shadow-2xl bg-white dark:bg-neutral-900 flex flex-col overflow-hidden">
+    <Paper
+      elevation={8}
+      sx={{
+        position: "fixed",
+        bottom: 20,
+        right: 20,
+        zIndex: 1300,
+        width: "min(24rem, calc(100vw - 2.5rem))",
+        height: "min(34rem, 70vh)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        borderRadius: 3,
+      }}
+    >
       {/* Header */}
-      <div className="border-b border-black/10 dark:border-white/15 p-4 flex items-start justify-between gap-2">
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold">✨ Course Builder</h2>
-          <p className="text-xs opacity-60">Tell me what you want to learn</p>
-        </div>
-        <button
-          onClick={() => setIsOpen(false)}
-          className="text-lg opacity-50 hover:opacity-75 transition-opacity flex-shrink-0"
-          aria-label="Close"
-        >
-          ×
-        </button>
-      </div>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          p: 2,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 1,
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            ✨ Course Builder
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Tell me what you want to learn
+          </Typography>
+        </Box>
+        <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+          {messages.length > 0 && (
+            <Tooltip title="New chat (clear conversation)">
+              <IconButton size="small" onClick={handleReset} aria-label="New chat">
+                <RestartAltIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          <IconButton size="small" onClick={() => setIsOpen(false)} aria-label="Close">
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Box>
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
         {messages.length === 0 ? (
-          // Empty state with starter suggestions
-          <div className="h-full flex flex-col items-center justify-center gap-3">
-            <div className="text-xs opacity-50 text-center px-2">
+          <Stack spacing={1.5} sx={{ alignItems: "center", justifyContent: "center", height: "100%" }}>
+            <Typography variant="caption" color="text.secondary" sx={{ textAlign: "center", px: 1 }}>
               Tap a suggestion to start
-            </div>
+            </Typography>
             {STARTER_SUGGESTIONS.map((suggestion, idx) => (
-              <button
+              <Button
                 key={idx}
-                onClick={() => handleStarterClick(suggestion)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-black/10 dark:border-white/15 hover:bg-black/[.05] dark:hover:bg-white/[.08] transition-colors text-left"
+                onClick={() => handleSendMessage(suggestion)}
+                variant="outlined"
+                color="inherit"
+                fullWidth
+                sx={{ justifyContent: "flex-start", textAlign: "left", fontWeight: 400 }}
               >
                 {suggestion}
-              </button>
+              </Button>
             ))}
-          </div>
+          </Stack>
         ) : (
-          <>
+          <Stack spacing={1.5}>
             {messages.map((msg, idx) => (
-              <div
+              <Box
                 key={idx}
-                className={`flex ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                sx={{
+                  display: "flex",
+                  justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                }}
               >
-                <div
-                  className={`max-w-xs rounded-lg px-3 py-2 text-sm break-words whitespace-pre-wrap ${
-                    msg.role === "user"
-                      ? "bg-blue-600 text-white"
-                      : "bg-black/[.05] dark:bg-white/[.08]"
-                  }`}
+                <Box
+                  sx={{
+                    maxWidth: "80%",
+                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    fontSize: "0.875rem",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    bgcolor: msg.role === "user" ? "primary.main" : "action.hover",
+                    color: msg.role === "user" ? "primary.contrastText" : "text.primary",
+                  }}
                 >
                   {msg.content}
-                </div>
-              </div>
+                </Box>
+              </Box>
             ))}
 
             {/* Action chips for the last assistant message */}
             {messages.length > 0 &&
               messages[messages.length - 1].role === "assistant" &&
               messages[messages.length - 1].actions && (
-                <div className="flex flex-wrap gap-2 mt-2">
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
                   {messages[messages.length - 1].actions!.map((action, idx) => {
-                    const { url, emoji, label } = getActionLink(action);
+                    const link = getActionLink(action);
+                    if (!link) return null;
                     return (
-                      <Link
+                      <Chip
                         key={idx}
-                        href={url}
-                        className="text-xs px-2 py-1 rounded border border-black/10 dark:border-white/15 hover:bg-black/[.05] dark:hover:bg-white/[.08] transition-colors inline-block"
-                      >
-                        {emoji} {label}
-                      </Link>
+                        component={Link}
+                        href={link.url}
+                        clickable
+                        variant="outlined"
+                        size="small"
+                        label={`${link.emoji} ${link.label}`}
+                      />
                     );
                   })}
-                </div>
+                </Box>
               )}
 
             {/* Typing indicator */}
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-black/[.05] dark:bg-white/[.08] px-3 py-2 rounded-lg flex gap-1">
-                  <span className="w-2 h-2 rounded-full bg-black/40 dark:bg-white/40 animate-bounce"></span>
-                  <span
-                    className="w-2 h-2 rounded-full bg-black/40 dark:bg-white/40 animate-bounce"
-                    style={{ animationDelay: "0.2s" }}
-                  ></span>
-                  <span
-                    className="w-2 h-2 rounded-full bg-black/40 dark:bg-white/40 animate-bounce"
-                    style={{ animationDelay: "0.4s" }}
-                  ></span>
-                </div>
-              </div>
+              <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                <Box
+                  sx={{
+                    bgcolor: "action.hover",
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 2,
+                    display: "flex",
+                    gap: 0.5,
+                  }}
+                >
+                  {[0, 0.2, 0.4].map((delay) => (
+                    <Box
+                      key={delay}
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        bgcolor: "text.disabled",
+                        animation: "agentBounce 1s infinite",
+                        animationDelay: `${delay}s`,
+                        "@keyframes agentBounce": {
+                          "0%, 80%, 100%": { transform: "scale(0)" },
+                          "40%": { transform: "scale(1)" },
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Box>
             )}
 
             <div ref={messagesEndRef} />
-          </>
+          </Stack>
         )}
-      </div>
+      </Box>
 
       {/* Input Row */}
-      <div className="border-t border-black/10 dark:border-white/15 p-3 flex gap-2">
-        <input
-          ref={inputRef}
-          type="text"
+      <Box
+        sx={{
+          borderTop: 1,
+          borderColor: "divider",
+          p: 1.5,
+          display: "flex",
+          gap: 1,
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          inputRef={inputRef}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !isLoading) {
-              handleSendMessage(inputValue);
+            // Enter sends; Shift+Enter inserts a newline.
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (!isLoading) handleSendMessage(inputValue);
             }
           }}
           placeholder="Tell me what to learn..."
           disabled={isLoading}
-          className="flex-1 px-3 py-2 text-sm border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+          size="small"
+          fullWidth
+          multiline
+          maxRows={4}
         />
-        <button
+        <IconButton
+          color="primary"
           onClick={() => handleSendMessage(inputValue)}
           disabled={isLoading || !inputValue.trim()}
-          className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          aria-label="Send"
         >
-          Send
-        </button>
-      </div>
-    </div>
+          <SendIcon />
+        </IconButton>
+      </Box>
+    </Paper>
   );
 }

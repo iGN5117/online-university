@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
+import ThemeRegistry from "@/components/ThemeRegistry";
+import Header from "@/components/Header";
 import AgentChat from "@/components/AgentChat";
 import "./globals.css";
 
@@ -27,23 +31,24 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <header className="border-b border-black/10 dark:border-white/15">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center gap-3">
-            <Link href="/" className="font-semibold text-lg tracking-tight">
-              🎓 Online University
-            </Link>
-            <span className="text-sm opacity-60 hidden sm:inline">
-              learn anything, one card at a time
-            </span>
-          </div>
-        </header>
-        <main className="mx-auto w-full max-w-5xl px-4 py-6 flex-1">
-          {children}
-        </main>
-        <AgentChat />
+      <body>
+        <InitColorSchemeScript attribute="class" defaultMode="system" />
+        <ThemeRegistry>
+          <Box sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+            <Header />
+            <Container
+              component="main"
+              maxWidth="lg"
+              sx={{ flex: 1, width: "100%", py: 4 }}
+            >
+              {children}
+            </Container>
+          </Box>
+          <AgentChat />
+        </ThemeRegistry>
       </body>
     </html>
   );

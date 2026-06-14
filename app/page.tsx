@@ -1,4 +1,9 @@
-import Link from "next/link";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
 import { listSchools } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -7,41 +12,61 @@ export default function Home() {
   const schools = listSchools();
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Hero section */}
-      <div className="py-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-          Pick a school. Learn one card at a time.
-        </h1>
-      </div>
+    <Stack spacing={4}>
+      <Typography variant="h3" sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}>
+        Pick a school. Learn one card at a time.
+      </Typography>
 
-      {/* Schools grid or empty state */}
       {schools.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg text-foreground/70 mb-4">
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
             No schools yet. Use the ✨ chat button to create one!
-          </p>
-        </div>
+          </Typography>
+        </Box>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Box
+          sx={{
+            display: "grid",
+            gap: 2,
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(2, 1fr)",
+              lg: "repeat(3, 1fr)",
+            },
+          }}
+        >
           {schools.map((school) => (
-            <Link
-              key={school.id}
-              href={`/school/${school.id}`}
-              className="rounded-2xl border border-black/10 dark:border-white/15 p-6 hover:shadow-md hover:-translate-y-0.5 transition-all bg-white dark:bg-black/30"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="text-4xl">{school.emoji}</div>
-                <h2 className="font-semibold text-xl">{school.name}</h2>
-                <p className="text-sm text-foreground/70">{school.description}</p>
-                <div className="text-xs font-medium text-foreground/60 mt-2">
-                  {school.classCount} class{school.classCount !== 1 ? "es" : ""}
-                </div>
-              </div>
-            </Link>
+            <Card key={school.id} variant="outlined" sx={{ height: "100%" }}>
+              <CardActionArea
+                href={`/school/${school.id}`}
+                sx={{ height: "100%" }}
+              >
+                <CardContent>
+                  <Stack spacing={1.5}>
+                    <Typography sx={{ fontSize: "2.25rem", lineHeight: 1 }}>
+                      {school.emoji}
+                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      {school.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {school.description}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 600, pt: 1 }}
+                    >
+                      {school.classCount} class
+                      {school.classCount !== 1 ? "es" : ""}
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </CardActionArea>
+            </Card>
           ))}
-        </div>
+        </Box>
       )}
-    </div>
+    </Stack>
   );
 }

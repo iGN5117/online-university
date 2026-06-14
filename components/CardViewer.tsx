@@ -3,6 +3,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CheckIcon from "@mui/icons-material/Check";
+import DeepenButton from "@/components/DeepenButton";
 import type { Lecture } from "@/lib/types";
 
 interface CardViewerProps {
@@ -22,16 +32,6 @@ export default function CardViewer({
   const [completed, setCompleted] = useState(false);
 
   const cards = lecture.content.cards || [];
-
-  if (cards.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-lg text-foreground/70">
-          No cards in this lecture.
-        </p>
-      </div>
-    );
-  }
 
   const currentCard = cards[currentIndex];
   const isLastCard = currentIndex === cards.length - 1;
@@ -80,6 +80,17 @@ export default function CardViewer({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (completed) return;
 
+      // Don't hijack keys while the user is typing in a field (e.g. the
+      // companion chat box), otherwise Space/Enter/arrows get stolen.
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.isContentEditable ||
+          ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+      ) {
+        return;
+      }
+
       if (e.key === "ArrowRight") {
         e.preventDefault();
         handleNext();
@@ -94,125 +105,171 @@ export default function CardViewer({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, revealed, completed, isLastCard]);
+
+  if (cards.length === 0) {
+    return (
+      <Box sx={{ textAlign: "center", py: 6 }}>
+        <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+          No cards in this lecture.
+        </Typography>
+      </Box>
+    );
+  }
 
   if (completed) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-6 text-center">
-        <div className="text-6xl">🎉</div>
-        <h2 className="text-2xl font-bold">Lecture complete!</h2>
-        <div className="flex flex-col sm:flex-row gap-4 mt-4">
-          <Link
-            href={`/class/${classId}`}
-            className="rounded-2xl px-6 py-3 font-semibold bg-black dark:bg-white text-white dark:text-black hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
+      <Stack spacing={3} sx={{ alignItems: "center", justifyContent: "center", py: 8, textAlign: "center" }}>
+        <Typography sx={{ fontSize: "3.75rem" }}>🎉</Typography>
+        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          Lecture complete!
+        </Typography>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
+          <Button component={Link} href={`/class/${classId}`} variant="contained" size="large">
             Back to class
-          </Link>
-          {nextLectureId && (
-            <Link
+          </Button>
+          {nextLectureId ? (
+            <Button
+              component={Link}
               href={`/lecture/${nextLectureId}`}
-              className="rounded-2xl px-6 py-3 font-semibold bg-black/10 dark:bg-white/10 text-foreground hover:shadow-md hover:-translate-y-0.5 transition-all"
+              variant="outlined"
+              size="large"
             >
               Next lecture →
-            </Link>
+            </Button>
+          ) : (
+            <DeepenButton classId={classId} mode="open" label="Go deeper →" variant="outlined" />
           )}
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Progress bar */}
-      <div className="h-1 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-black dark:bg-white transition-all"
-          style={{ width: `${((currentIndex + 1) / cards.length) * 100}%` }}
-        />
-      </div>
+    <Stack spacing={3}>
+      <LinearProgress
+        variant="determinate"
+        value={((currentIndex + 1) / cards.length) * 100}
+        sx={{ height: 6, borderRadius: 999 }}
+      />
 
-      {/* Main card */}
-      <div
-        className="min-h-96 rounded-2xl border border-black/10 dark:border-white/15 p-8 md:p-12 flex items-center justify-center cursor-pointer hover:shadow-md transition-shadow bg-white dark:bg-black/30 card-container"
+      <Paper
+        variant="outlined"
         onClick={handleCardClick}
+        sx={{
+          minHeight: 384,
+          p: { xs: 4, md: 6 },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "box-shadow 0.2s",
+          "&:hover": { boxShadow: 3 },
+        }}
       >
-        <div className="text-center">
+        <Box sx={{ textAlign: "center", width: "100%" }}>
           {!revealed ? (
-            <div className="flex flex-col items-center gap-4">
-              <p className="text-2xl md:text-4xl font-bold leading-tight">
+            <Stack spacing={2} sx={{ alignItems: "center" }}>
+              <Typography
+                sx={{
+                  fontSize: { xs: "1.5rem", md: "2.25rem" },
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                }}
+              >
                 {currentCard.front}
-              </p>
-              <button
+              </Typography>
+              <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleReveal();
                 }}
-                className="text-sm text-foreground/60 hover:text-foreground transition-colors mt-4 underline"
+                size="small"
+                sx={{ mt: 2 }}
               >
                 Reveal
-              </button>
-            </div>
+              </Button>
+            </Stack>
           ) : (
-            <div className="flex flex-col gap-6">
-              <div>
-                <p className="text-lg md:text-2xl leading-relaxed">
-                  {currentCard.back}
-                </p>
-              </div>
-              {currentCard.example && (
-                <div className="border-l-4 border-black/20 dark:border-white/20 pl-4 bg-black/5 dark:bg-white/5 py-3 px-4 rounded-lg text-left">
-                  <p className="text-xs font-semibold text-foreground/60 mb-2">
-                    💡 Real-world example
-                  </p>
-                  <p className="text-sm text-foreground/80">
-                    {currentCard.example}
-                  </p>
-                </div>
+            <Stack spacing={3}>
+              <Typography
+                sx={{ fontSize: { xs: "1.125rem", md: "1.5rem" }, lineHeight: 1.6 }}
+              >
+                {currentCard.back}
+              </Typography>
+              {currentCard.diagram && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    color: "text.primary",
+                    "& svg": { maxWidth: "100%", height: "auto" },
+                  }}
+                  // SVG is generated by our own Haiku agent (not user input);
+                  // single-user app, so injection risk is low.
+                  dangerouslySetInnerHTML={{ __html: currentCard.diagram }}
+                />
               )}
-            </div>
+              {currentCard.example && (
+                <Box
+                  sx={{
+                    borderLeft: 4,
+                    borderColor: "secondary.main",
+                    bgcolor: "action.hover",
+                    py: 1.5,
+                    px: 2,
+                    borderRadius: 1,
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontWeight: 700, display: "block", mb: 1 }}
+                  >
+                    💡 Real-world example
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {currentCard.example}
+                  </Typography>
+                </Box>
+              )}
+            </Stack>
           )}
-        </div>
-      </div>
+        </Box>
+      </Paper>
 
-      {/* Controls */}
-      <div className="flex flex-col gap-4">
-        {/* Navigation buttons */}
-        <div className="flex justify-between gap-3">
-          <button
+      <Stack spacing={2}>
+        <Stack direction="row" spacing={1.5} sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <Button
             onClick={handlePrev}
             disabled={currentIndex === 0}
-            className="flex-1 sm:flex-none px-6 py-2 rounded-2xl border border-black/10 dark:border-white/15 font-medium transition-all disabled:opacity-40 hover:shadow-md hover:-translate-y-0.5"
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
           >
-            ← Back
-          </button>
+            Back
+          </Button>
 
-          <div className="flex-1 text-center text-sm text-foreground/70 flex items-center justify-center">
+          <Typography variant="body2" color="text.secondary">
             {currentIndex + 1} / {cards.length}
-          </div>
+          </Typography>
 
           {isLastCard ? (
-            <button
-              onClick={handleFinish}
-              className="flex-1 sm:flex-none px-6 py-2 rounded-2xl bg-black dark:bg-white text-white dark:text-black font-medium hover:shadow-md hover:-translate-y-0.5 transition-all"
-            >
-              Finish ✓
-            </button>
+            <Button onClick={handleFinish} variant="contained" endIcon={<CheckIcon />}>
+              Finish
+            </Button>
           ) : (
-            <button
-              onClick={handleNext}
-              disabled={currentIndex === cards.length - 1}
-              className="flex-1 sm:flex-none px-6 py-2 rounded-2xl border border-black/10 dark:border-white/15 font-medium transition-all disabled:opacity-40 hover:shadow-md hover:-translate-y-0.5"
-            >
-              Next →
-            </button>
+            <Button onClick={handleNext} variant="contained" endIcon={<ArrowForwardIcon />}>
+              Next
+            </Button>
           )}
-        </div>
+        </Stack>
 
-        {/* Keyboard hints */}
-        <div className="text-xs text-foreground/50 text-center">
+        <Typography variant="caption" color="text.secondary" sx={{ textAlign: "center" }}>
           Space to reveal • Arrow keys to navigate
-        </div>
-      </div>
-    </div>
+        </Typography>
+      </Stack>
+    </Stack>
   );
 }

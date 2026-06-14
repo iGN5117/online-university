@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runAgentTurn } from "@/lib/agent";
+import { runTeacherTurn } from "@/lib/agent";
 
 export const dynamic = "force-dynamic";
 
@@ -19,11 +19,15 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: { messages?: ChatTurn[] };
+  let body: { lectureId?: number; messages?: ChatTurn[] };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  if (typeof body.lectureId !== "number") {
+    return NextResponse.json({ error: "lectureId is required" }, { status: 400 });
   }
 
   const messages: ChatTurn[] = (body.messages ?? [])
@@ -33,9 +37,8 @@ export async function POST(req: Request) {
         typeof m?.content === "string" &&
         m.content.trim().length > 0,
     )
-    // Strip any client-only fields (e.g. `actions`); the Anthropic API
-    // rejects unknown keys on a message.
     .map((m) => ({ role: m.role, content: m.content }));
+
   if (!messages.length || messages[messages.length - 1].role !== "user") {
     return NextResponse.json(
       { error: "messages must end with a user turn" },
@@ -44,11 +47,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const result = await runAgentTurn(messages);
+    const result = await runTeacherTurn(body.lectureId, messages);
     return NextResponse.json(result);
   } catch (err) {
-    console.error("[/api/agent] turn failed:", err);
-    const message = err instanceof Error ? err.message : "Agent request failed";
+    console.error("[/api/teacher] turn failed:", err);
+    const message = err instanceof Error ? err.message : "Teacher request failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
