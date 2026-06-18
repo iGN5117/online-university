@@ -90,8 +90,13 @@ const TOOLS: Anthropic.Tool[] = [
         name: { type: "string", description: "e.g. 'Equities 101'" },
         emoji: { type: "string", description: "single emoji" },
         description: { type: "string", description: "one sentence" },
+        objective: {
+          type: "string",
+          description:
+            "The learner's TRUE goal and scope for this class, in their terms — what they actually want to learn and how far it extends. Capture the real intent, not a broadened field. E.g. 'Cover the key lessons from the book The Psychology of Money' (NOT 'Personal finance'). This bounds the class: 'go deeper' stays within it and stops when it's fully covered.",
+        },
       },
-      required: ["school_id", "name", "emoji", "description"],
+      required: ["school_id", "name", "emoji", "description", "objective"],
     },
   },
   {
@@ -219,6 +224,7 @@ Rules:
 - For cards where a picture genuinely aids understanding (a process, a structure, a relationship), add a small inline SVG to that card's "diagram" field using currentColor — not every card, only where it helps.
 - When you create a lecture, set "rationale" to why the learner wants it and their level, so the in-lesson teacher can tailor answers.
 - Always set "difficulty" (Beginner/Intermediate/Advanced/Expert). Lessons in a class are auto-ordered by difficulty, so this places the lesson correctly on the ladder — an intro lesson is Beginner, deeper ones go higher.
+- When you create a class, set "objective" to the learner's real goal and scope in their own terms — what they actually want and how far it goes. A class is BOUNDED by its objective. If they ask for a specific book, course, or finite topic, say so exactly ("the key lessons from <book>"), not the broad field it belongs to. This is what "go deeper" follows, so getting it right keeps later lessons on target instead of drifting into the wider subject.
 - Start a new class with ONE introductory lecture. When the user wants more depth, add further lectures or add_cards/add_questions to existing ones.
 - Be brief. Confirm what you created in 1-2 sentences. Never repeat card content back in chat.${management}
 
@@ -247,6 +253,7 @@ function executeTool(
         input.name as string,
         input.emoji as string,
         input.description as string,
+        input.objective as string | undefined,
       );
       actions.push({ kind: "class", id, label: input.name as string });
       return `class_id=${id}`;
@@ -296,6 +303,7 @@ function executeTool(
           cur.school_id,
           newName,
           (input.emoji as string) || "📚",
+          (input.description as string) || newName,
           (input.description as string) || newName,
         );
         actions.push({ kind: "class", id: targetClassId, label: newName });
@@ -436,11 +444,17 @@ Rules:
  * just each existing lesson's title + summary + difficulty (compact, one-shot), so
  * the model avoids repeats and knows the current level without sending card text.
  */
-export async function deepenClass(
-  classId: number,
-): Promise<{ lectureId: number; title: string; difficulty: Difficulty }> {
+export type DeepenResult =
+  | { status: "added"; lectureId: number; title: string; difficulty: Difficulty }
+  | { status: "complete"; reason: string };
+
+export async function deepenClass(classId: number): Promise<DeepenResult> {
   const cls = getClass(classId);
   if (!cls) throw new Error(`class ${classId} not found`);
+
+  // What this class is actually for — the boundary "go deeper" must respect.
+  // Falls back to description/name for classes created before objectives existed.
+  const objective = cls.objective?.trim() || cls.description?.trim() || cls.name;
 
   const existing = listLectures(classId);
   const covered =
@@ -451,7 +465,7 @@ export async function deepenClass(
       )
       .join("\n") || "(none yet)";
 
-  const tool: Anthropic.Tool = {
+  const createTool: Anthropic.Tool = {
     name: "create_deeper_lecture",
     description: "Create the next, deeper lecture for this class.",
     input_schema: {
@@ -479,24 +493,46 @@ export async function deepenClass(
     },
   };
 
-  const system = `You extend the class "${cls.name}" (${cls.description}) on Online University, a bite-size card-based learning platform.
+  const completeTool: Anthropic.Tool = {
+    name: "scope_complete",
+    description:
+      "Call this INSTEAD of creating a lecture when the existing lessons already cover the class objective in full, so any further lecture would go beyond what the learner asked for.",
+    input_schema: {
+      type: "object",
+      properties: {
+        reason: {
+          type: "string",
+          description:
+            "One friendly sentence telling the learner they've covered the whole objective (name the objective).",
+        },
+      },
+      required: ["reason"],
+    },
+  };
+
+  const system = `You extend the class "${cls.name}" on Online University, a bite-size card-based learning platform.
+
+THE CLASS OBJECTIVE (this is the boundary — never go beyond it):
+${objective}
 
 Already covered (assume the learner has mastered all of these):
 ${covered}
 
-Produce the NEXT lecture — exactly ONE step deeper than what's above. Do not repeat covered material; advance to the next logical, more advanced subtopic. Pick the appropriate difficulty on the ladder Beginner → Intermediate → Advanced → Expert (don't skip rungs; once everything is Expert, add a new Expert-level deep-dive). Cards: front = one concept in a few words; back = 2-4 plain sentences, no jargon; example = a concrete real-world example. Add a small inline SVG (currentColor) to a card only where a visual truly helps.`;
+Decide between two actions:
+1. If there is still material WITHIN the objective that hasn't been covered, call create_deeper_lecture: produce the NEXT lecture — one logical step deeper than what's above, strictly inside the objective. Do not repeat covered material, and do NOT drift into the broader field the objective belongs to. Pick the appropriate difficulty on the ladder Beginner → Intermediate → Advanced → Expert (don't skip rungs). Cards: front = one concept in a few words; back = 2-4 plain sentences, no jargon; example = a concrete real-world example. Add a small inline SVG (currentColor) to a card only where a visual truly helps.
+2. If the existing lessons already cover the objective in full, call scope_complete instead. Do not pad the class with tangential material just to add a lecture.`;
 
   const client = new Anthropic();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system,
-    tools: [tool],
-    tool_choice: { type: "tool", name: "create_deeper_lecture" },
+    tools: [createTool, completeTool],
+    tool_choice: { type: "any" },
     messages: [
       {
         role: "user",
-        content: "Create the next deeper lecture for this class.",
+        content: "Add the next lesson for this class, or report it complete.",
       },
     ],
   });
@@ -504,7 +540,12 @@ Produce the NEXT lecture — exactly ONE step deeper than what's above. Do not r
   const toolUse = response.content.find(
     (b): b is Anthropic.ToolUseBlock => b.type === "tool_use",
   );
-  if (!toolUse) throw new Error("model did not produce a lecture");
+  if (!toolUse) throw new Error("model did not produce a result");
+
+  if (toolUse.name === "scope_complete") {
+    const { reason } = toolUse.input as { reason: string };
+    return { status: "complete", reason };
+  }
 
   const input = toolUse.input as {
     title: string;
@@ -524,5 +565,10 @@ Produce the NEXT lecture — exactly ONE step deeper than what's above. Do not r
     input.questions,
   );
 
-  return { lectureId, title: input.title, difficulty: input.difficulty };
+  return {
+    status: "added",
+    lectureId,
+    title: input.title,
+    difficulty: input.difficulty,
+  };
 }

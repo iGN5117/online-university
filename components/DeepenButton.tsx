@@ -8,11 +8,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
-interface DeepenResult {
-  lectureId: number;
-  title: string;
-  difficulty: string;
-}
+type DeepenResult =
+  | { status: "added"; lectureId: number; title: string; difficulty: string }
+  | { status: "complete"; reason: string };
 
 interface ErrorResponse {
   error: string;
@@ -33,11 +31,13 @@ export default function DeepenButton({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
 
   const handleClick = async () => {
     if (isLoading) return;
     setIsLoading(true);
     setError(null);
+    setDone(null);
     try {
       const res = await fetch("/api/deepen", {
         method: "POST",
@@ -50,6 +50,10 @@ export default function DeepenButton({
         return;
       }
       const result = data as DeepenResult;
+      if (result.status === "complete") {
+        setDone(result.reason);
+        return;
+      }
       if (mode === "open") {
         router.push(`/lecture/${result.lectureId}`);
       } else {
@@ -82,6 +86,15 @@ export default function DeepenButton({
       {error && (
         <Typography variant="caption" color="error" sx={{ display: "block", mt: 1 }}>
           {error}
+        </Typography>
+      )}
+      {done && (
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mt: 1 }}
+        >
+          🎉 {done}
         </Typography>
       )}
     </Box>

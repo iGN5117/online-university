@@ -99,6 +99,7 @@ export function createClass(
   name: string,
   emoji: string,
   description: string,
+  objective = "",
 ): number {
   const db = getDb();
   let slug = slugify(name);
@@ -108,9 +109,10 @@ export function createClass(
   if (exists.get(schoolId, slug)) slug = `${slug}-${Date.now() % 10000}`;
   return db
     .prepare(
-      "INSERT INTO classes (school_id, name, slug, emoji, description) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO classes (school_id, name, slug, emoji, description, objective) VALUES (?, ?, ?, ?, ?, ?)",
     )
-    .run(schoolId, name, slug, emoji, description).lastInsertRowid as number;
+    .run(schoolId, name, slug, emoji, description, objective)
+    .lastInsertRowid as number;
 }
 
 // ---------- Lectures ----------

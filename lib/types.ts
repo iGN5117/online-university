@@ -21,6 +21,7 @@ export interface ClassRow {
   slug: string;
   emoji: string;
   description: string;
+  objective: string; // the learner's true goal/scope — anchors "go deeper" within bounds
   lectureCount: number;
   completedCount: number;
 }

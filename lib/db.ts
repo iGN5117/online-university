@@ -31,6 +31,7 @@ function init(): Database.Database {
       slug TEXT NOT NULL,
       emoji TEXT NOT NULL DEFAULT '📚',
       description TEXT NOT NULL DEFAULT '',
+      objective TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       UNIQUE (school_id, slug)
     );
@@ -69,6 +70,14 @@ function init(): Database.Database {
       taken_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+
+  // Migration: add classes.objective to DBs created before it existed.
+  const classCols = db.prepare("PRAGMA table_info(classes)").all() as {
+    name: string;
+  }[];
+  if (!classCols.some((c) => c.name === "objective")) {
+    db.exec("ALTER TABLE classes ADD COLUMN objective TEXT NOT NULL DEFAULT ''");
+  }
 
   const count = db.prepare("SELECT COUNT(*) AS n FROM schools").get() as {
     n: number;
