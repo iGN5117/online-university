@@ -1,11 +1,23 @@
 {
+  "/Users/nileshgajwani/Personal_Projects/Online_University/auth.config.ts": {
+    "mtime": 1781756821.8210964,
+    "hash": "e21584682d53e71df31a2cc9e829cc10"
+  },
   "/Users/nileshgajwani/Personal_Projects/Online_University/next-env.d.ts": {
-    "mtime": 1781738407.2862012,
+    "mtime": 1781756737.7474124,
     "hash": "2a74d3909800ca5467fa83b0ab4a4890"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/proxy.ts": {
+    "mtime": 1781756768.8745205,
+    "hash": "af6a59b9d1c80a3d5005cf8472573316"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/eslint.config.mjs": {
     "mtime": 1781300537.7113168,
     "hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/auth.ts": {
+    "mtime": 1781756722.9513712,
+    "hash": "36b81fb26f890fe22dfc074a4acfc9f0"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/next.config.ts": {
     "mtime": 1781738303.4391625,
@@ -20,52 +32,60 @@
     "hash": "e78e41f35add12689ffa322977652b1e"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/layout.tsx": {
-    "mtime": 1781738396.593563,
-    "hash": "43b3a4975f211f1f097160179d059cca"
+    "mtime": 1781756454.7780883,
+    "hash": "3e1227b58ab9490a5b78dbc19b3f0302"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/manifest.ts": {
     "mtime": 1781738387.0870574,
     "hash": "31e084f4ee979a190807c74645328273"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/page.tsx": {
-    "mtime": 1781360337.541845,
-    "hash": "e6e1872ae75e11f02343632139570e7e"
+    "mtime": 1781756371.909725,
+    "hash": "0ccc03d7b8fc39a40b20234d7769fb41"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/lecture/[id]/page.tsx": {
-    "mtime": 1781738284.6691685,
-    "hash": "fd2207233e6182bfc2cbb427f923c325"
+    "mtime": 1781756404.6962023,
+    "hash": "f82608658ccbb13ae02e214a44d6aa3b"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/class/[id]/page.tsx": {
-    "mtime": 1781378897.9345863,
-    "hash": "5afe3c4fc5a11339aa8533884c5f3ccc"
+    "mtime": 1781756384.5831695,
+    "hash": "0af2f7143a61a4cadb9f715f95f31f9c"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/class/[id]/test/page.tsx": {
-    "mtime": 1781360337.556929,
-    "hash": "8740271d0360964234cdbffb6a812312"
+    "mtime": 1781756396.3634727,
+    "hash": "9a885c7eb8a93b2802c605ad65ae578a"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/auth/[...nextauth]/route.ts": {
+    "mtime": 1781756267.946342,
+    "hash": "64f6d6799ab87d3850d5c17b77ad8345"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/deepen/route.ts": {
-    "mtime": 1781378843.4760106,
-    "hash": "1287b3826b761d217c319ad62a09a401"
+    "mtime": 1781756658.8147523,
+    "hash": "085d65febe35e62cd270df743bd8359f"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/tests/route.ts": {
-    "mtime": 1781301048.2147026,
-    "hash": "affeffae9b019afd546768d05f2361b7"
+    "mtime": 1781756678.5036867,
+    "hash": "b431040ae4d541c7af1b5b4d76270dd7"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/agent/route.ts": {
-    "mtime": 1781330949.757927,
-    "hash": "9438cc4fa9d91a02d7fc94db9720f708"
+    "mtime": 1781756645.9089255,
+    "hash": "ea9c4dd6200aafd329e04cc86c3d69a6"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/lectures/complete/route.ts": {
-    "mtime": 1781301015.1215444,
-    "hash": "480aa78bf03454289b6c0fae0b7a0abc"
+    "mtime": 1781756686.2848928,
+    "hash": "4c74eae78e8d1698d3b5a9a1b341edf9"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/api/teacher/route.ts": {
-    "mtime": 1781377002.6012537,
-    "hash": "ac1c5ed7dd4993e8fe28c6d326d83a7d"
+    "mtime": 1781756670.5361238,
+    "hash": "175ecc75b07b82397c00fb87813a40e0"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/app/school/[id]/page.tsx": {
-    "mtime": 1781360337.5468466,
-    "hash": "867ba508a14096a13f4ef663e26f4d10"
+    "mtime": 1781756378.1970756,
+    "hash": "50f2760b59e524cbbd452b801742e1d1"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/app/login/page.tsx": {
+    "mtime": 1781756573.0384462,
+    "hash": "63ad08b5ad5a50ccf73175ce37d3fdcf"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/components/ThemeRegistry.tsx": {
     "mtime": 1781358839.890161,
@@ -92,8 +112,8 @@
     "hash": "044ffe6da9db1a2ba4c3f1faef68e653"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/components/Header.tsx": {
-    "mtime": 1781360727.1630971,
-    "hash": "fa36ee8e5c26395ec97cf93a40d0b26f"
+    "mtime": 1781756578.3542154,
+    "hash": "880374f207b2b4202eaa805ac4899c1d"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/components/TeacherChat.tsx": {
     "mtime": 1781377033.0952952,
@@ -108,12 +128,12 @@
     "hash": "8335d244cba2dece652df78ac75d6359"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/lib/data.ts": {
-    "mtime": 1781401713.937304,
-    "hash": "5e4938ae2cf1a5668b631475d4aed775"
+    "mtime": 1781756087.2992766,
+    "hash": "ebe04e49d808a3caab245529a12ba2da"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/lib/agent.ts": {
-    "mtime": 1781401796.8778067,
-    "hash": "36d4eb3df83e5d2b73ca0a1316f366e1"
+    "mtime": 1781756172.737683,
+    "hash": "f090173c27e36563082824ba10ff33e5"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/lib/seed.ts": {
     "mtime": 1781300785.155928,
@@ -128,20 +148,28 @@
     "hash": "e23e2d9cf820272af4def33d6b2db6a6"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/lib/db.ts": {
-    "mtime": 1781738289.3270466,
-    "hash": "db1d63524eaa1029d791871fa4411796"
+    "mtime": 1781755930.7626834,
+    "hash": "e474f8ca9e8726930eb4fefaf48bcb40"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/lib/auth.ts": {
+    "mtime": 1781756635.6959078,
+    "hash": "eacca2c6950c26917856a68739cb2cea"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/README.md": {
     "mtime": 1781301321.159797,
     "hash": "ee3a8065842adc6c3982fdf50ef0bc2a"
+  },
+  "/Users/nileshgajwani/Personal_Projects/Online_University/DEPLOYMENT.md": {
+    "mtime": 1781783809.1554534,
+    "hash": "8efcdb6d479bce8bd06eade2c77d1948"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/AGENTS.md": {
     "mtime": 1781300537.712953,
     "hash": "9e09241799026ac05be315a2f0b50055"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/HANDOFF.md": {
-    "mtime": 1781400505.5689597,
-    "hash": "728251c32f09b9b13d54d04e50679f77"
+    "mtime": 1781783879.40444,
+    "hash": "cb4c5f1ac771bc68e80c2614003921f9"
   },
   "/Users/nileshgajwani/Personal_Projects/Online_University/CLAUDE.md": {
     "mtime": 1781617182.0044568,

@@ -8,6 +8,7 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import { getSchool, listClasses } from "@/lib/data";
+import { requireUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +17,16 @@ export default async function SchoolPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const userId = await requireUser();
   const { id } = await params;
   const numId = Number(id);
-  const school = getSchool(numId);
+  const school = getSchool(numId, userId);
 
   if (!school) {
     notFound();
   }
 
-  const classes = listClasses(numId);
+  const classes = listClasses(numId, userId);
 
   return (
     <Stack spacing={4}>

@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import Header from "@/components/Header";
 import AgentChat from "@/components/AgentChat";
+import { auth } from "@/auth";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -31,11 +33,13 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="en"
@@ -45,17 +49,28 @@ export default function RootLayout({
       <body>
         <InitColorSchemeScript attribute="class" defaultMode="system" />
         <ThemeRegistry>
-          <Box sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-            <Header />
-            <Container
-              component="main"
-              maxWidth="lg"
-              sx={{ flex: 1, width: "100%", py: 4 }}
-            >
-              {children}
-            </Container>
-          </Box>
-          <AgentChat />
+          <SessionProvider session={session}>
+            {session ? (
+              <>
+                <Box
+                  sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}
+                >
+                  <Header />
+                  <Container
+                    component="main"
+                    maxWidth="lg"
+                    sx={{ flex: 1, width: "100%", py: 4 }}
+                  >
+                    {children}
+                  </Container>
+                </Box>
+                <AgentChat />
+              </>
+            ) : (
+              // Logged-out (e.g. /login) renders without the app chrome.
+              children
+            )}
+          </SessionProvider>
         </ThemeRegistry>
       </body>
     </html>

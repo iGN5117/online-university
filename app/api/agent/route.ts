@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { runAgentTurn } from "@/lib/agent";
+import { auth } from "@/auth";
+import { OwnershipError } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +11,11 @@ interface ChatTurn {
 }
 
 export async function POST(req: Request) {
+  const session = await auth();
+  if (typeof session?.userId !== "number") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
       {
@@ -44,9 +51,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const result = await runAgentTurn(messages);
+    const result = await runAgentTurn(session.userId, messages);
     return NextResponse.json(result);
   } catch (err) {
+    if (err instanceof OwnershipError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     console.error("[/api/agent] turn failed:", err);
     const message = err instanceof Error ? err.message : "Agent request failed";
     return NextResponse.json({ error: message }, { status: 500 });

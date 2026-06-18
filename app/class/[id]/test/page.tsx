@@ -7,6 +7,7 @@ import MuiLink from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { getClass, getTestQuestions, listTestAttempts } from "@/lib/data";
+import { requireUser } from "@/lib/auth";
 import TestRunner from "@/components/TestRunner";
 
 export const dynamic = "force-dynamic";
@@ -16,16 +17,17 @@ export default async function TestPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const userId = await requireUser();
   const { id } = await params;
   const classId = Number(id);
-  const cls = getClass(classId);
+  const cls = getClass(classId, userId);
 
   if (!cls) {
     notFound();
   }
 
-  const questions = getTestQuestions(classId);
-  const attempts = listTestAttempts(classId);
+  const questions = getTestQuestions(classId, userId);
+  const attempts = listTestAttempts(classId, userId);
 
   // Shuffle and cap at 10 questions per sitting
   const shuffled = [...questions].sort(() => Math.random() - 0.5).slice(0, 10);

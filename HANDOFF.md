@@ -3,9 +3,23 @@
 Single-file context for the next agent. Read this first, then `graphify-out/GRAPH_REPORT.md`.
 
 ## What this project is
-A bite-size, card-based learning platform for short attention spans. Browse **schools → classes → lectures**; each lecture is a deck of flashcards (front / back / example) plus a quiz. An AI **Course Builder** companion creates/extends content via chat. Single-user, local.
+A bite-size, card-based learning platform for short attention spans. Browse **schools → classes → lectures**; each lecture is a deck of flashcards (front / back / example) plus a quiz. An AI **Course Builder** companion creates/extends content via chat. **Multi-user** (Google sign-in, invite-only) with a **private per-user universe**; deployable to Fly.io with a persistent SQLite volume + iPhone "reel" mode + PWA install.
 
-**Stack:** Next.js **16.2.9** (App Router, Turbopack) · React **19.2** · **MUI v9** (Emotion) · **better-sqlite3** · Anthropic SDK (**claude-haiku-4-5**).
+**Stack:** Next.js **16.2.9** (App Router, Turbopack) · React **19.2** · **MUI v9** (Emotion) · **better-sqlite3** · Anthropic SDK (**claude-haiku-4-5**) · **Auth.js v5** (`next-auth@5`, Google, JWT).
+
+## Next session — todos (as of 2026-06-18)
+End-user setup/deploy commands live in **`DEPLOYMENT.md`**. Agent-pickup order:
+
+1. **Commit the multi-user work** (uncommitted on `main`). Suggested: one commit + regenerated `graphify-out/`.
+   - ⚠️ **`.env.example` is gitignored** (`.gitignore` matches `.env*`): `git add -f .env.example` or add a `!.env.example` negation so the template is tracked.
+   - `.claude/settings.json` is also modified (plugin install) — decide whether to include.
+2. **Deploy to Fly** — `DEPLOYMENT.md` §1–3 (Google OAuth client, `.env.local`, `fly secrets`, `fly deploy`, keep `fly scale count 1`). Interactive; needs iGN.
+3. **Migrate the existing DB** to the volume — `DEPLOYMENT.md` §4 (WAL-checkpoint → copy → sign in as `OWNER_EMAIL` to claim the 7 classes).
+4. **Device verification** — `DEPLOYMENT.md` §5 (reel mode, PWA install, cross-user isolation).
+
+Deferred/optional: automated ownership-isolation tests; invite-code flow (currently env allowlist); per-user starter content (new users start empty by design).
+
+Multi-user watch-outs: keep Fly to **one machine** (SQLite single-writer); never import `lib/data.ts`/`better-sqlite3` into `proxy.ts` (Edge bundle — it uses the edge-safe `auth.config.ts`); `trustHost: true` is required off-Vercel or `/api/auth/session` throws `UntrustedHost`. Session id is `session.userId` (number), not `session.user.id`. Full design in memory: `multi-user-auth`.
 
 ## Hard rules (do not violate)
 - **AGENTS.md:** this is a non-standard Next.js — read `node_modules/next/dist/docs/...` before writing Next code. Dynamic route `params` are async (`await params`).
@@ -49,8 +63,8 @@ A bite-size, card-based learning platform for short attention spans. Browse **sc
 - Deepening = **incremental + compact context** (not an upfront roadmap).
 
 ## Known limitations / open items
-- **Nothing is committed.** All work is uncommitted on `main` (last commit `eda19e1`). New files: `components/{Header,ThemeRegistry,LinkBehaviour,TeacherChat,DeepenButton}.tsx`, `lib/theme.ts`, `app/api/{teacher,deepen}/`. `postcss.config.mjs` deleted. **Offer to commit early.**
-- SVG injected via `dangerouslySetInnerHTML` — fine for single-user; add a sanitizer if it ever goes multi-user.
+- **The multi-user/auth work is uncommitted on `main`** (last commit `883af44`, the reel+cloud work). New files: `auth.config.ts`, `auth.ts`, `proxy.ts`, `lib/auth.ts`, `app/login/`, `app/api/auth/`, `.env.example`; modified: `lib/{db,data,agent}.ts`, all 5 API routes, all 5 pages, `app/layout.tsx`, `components/Header.tsx`. **Offer to commit early** (see todo 1 for the `.env.example` gitignore caveat).
+- SVG injected via `dangerouslySetInnerHTML` — content is per-user and self-authored via the agent, so low risk, but now that it's multi-user consider a sanitizer (e.g. DOMPurify) before any content sharing.
 - `InitColorSchemeScript` emits benign **dev-only** console warnings ("Encountered a script tag…") — stripped in production.
 - Legacy/seed lessons have **no difficulty** → they sort first (as foundations). Could backfill difficulties.
 - Teacher button appears on all lectures, but only lessons created after this session carry a real `rationale`.

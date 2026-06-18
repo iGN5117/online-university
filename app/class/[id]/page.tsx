@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Chip from "@mui/material/Chip";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { getClass, getSchool, listLectures } from "@/lib/data";
+import { requireUser } from "@/lib/auth";
 import DeepenButton from "@/components/DeepenButton";
 
 export const dynamic = "force-dynamic";
@@ -22,16 +23,17 @@ export default async function ClassPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const userId = await requireUser();
   const { id } = await params;
   const numId = Number(id);
-  const cls = getClass(numId);
+  const cls = getClass(numId, userId);
 
   if (!cls) {
     notFound();
   }
 
-  const school = getSchool(cls.school_id);
-  const lectures = listLectures(numId);
+  const school = getSchool(cls.school_id, userId);
+  const lectures = listLectures(numId, userId);
   const progress =
     cls.lectureCount > 0 ? (cls.completedCount / cls.lectureCount) * 100 : 0;
 

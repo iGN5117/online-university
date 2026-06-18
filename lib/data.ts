@@ -36,40 +36,120 @@ function slugify(name: string): string {
   );
 }
 
-// ---------- Schools ----------
-
-export function listSchools(): School[] {
-  return getDb()
-    .prepare(
-      `SELECT s.*, (SELECT COUNT(*) FROM classes c WHERE c.school_id = s.id) AS classCount
-       FROM schools s ORDER BY s.id`,
-    )
-    .all() as School[];
+// Thrown when a user references content they don't own. Routes map this to a
+// 403 so a tampered id never mutates or reveals another user's data.
+export class OwnershipError extends Error {
+  constructor(message = "not found") {
+    super(message);
+    this.name = "OwnershipError";
+  }
 }
 
-export function getSchool(id: number): School | undefined {
+// ---------- Ownership guards ----------
+// Every accessor scopes to the caller via schools.user_id. Content cascades
+// from a school (school → class → lecture → questions/progress/tests), so
+// checking the owning school is enough to authorize any descendant.
+
+function ownsSchool(userId: number, schoolId: number): boolean {
+  return !!getDb()
+    .prepare("SELECT 1 FROM schools WHERE id = ? AND user_id = ?")
+    .get(schoolId, userId);
+}
+
+function ownsClass(userId: number, classId: number): boolean {
+  return !!getDb()
+    .prepare(
+      `SELECT 1 FROM classes c JOIN schools s ON s.id = c.school_id
+       WHERE c.id = ? AND s.user_id = ?`,
+    )
+    .get(classId, userId);
+}
+
+function ownsLecture(userId: number, lectureId: number): boolean {
+  return !!getDb()
+    .prepare(
+      `SELECT 1 FROM lectures l
+         JOIN classes c ON c.id = l.class_id
+         JOIN schools s ON s.id = c.school_id
+       WHERE l.id = ? AND s.user_id = ?`,
+    )
+    .get(lectureId, userId);
+}
+
+// ---------- Users ----------
+
+/**
+ * Upsert the signed-in user (called from the auth jwt callback) and return the
+ * internal user id. If the email matches OWNER_EMAIL, adopt any pre-multi-user
+ * content (NULL-owned schools) — idempotent and safe to run on every login, so
+ * migrating the existing DB before or after first sign-in both work.
+ */
+export function getOrCreateUser(
+  email: string,
+  name: string,
+  image: string,
+): number {
+  const db = getDb();
+  const existing = db
+    .prepare("SELECT id FROM users WHERE email = ?")
+    .get(email) as { id: number } | undefined;
+
+  let id: number;
+  if (existing) {
+    id = existing.id;
+    db.prepare("UPDATE users SET name = ?, image = ? WHERE id = ?").run(
+      name,
+      image,
+      id,
+    );
+  } else {
+    id = db
+      .prepare("INSERT INTO users (email, name, image) VALUES (?, ?, ?)")
+      .run(email, name, image).lastInsertRowid as number;
+  }
+
+  const owner = process.env.OWNER_EMAIL;
+  if (owner && email.toLowerCase() === owner.toLowerCase()) {
+    db.prepare("UPDATE schools SET user_id = ? WHERE user_id IS NULL").run(id);
+  }
+  return id;
+}
+
+// ---------- Schools ----------
+
+export function listSchools(userId: number): School[] {
   return getDb()
     .prepare(
       `SELECT s.*, (SELECT COUNT(*) FROM classes c WHERE c.school_id = s.id) AS classCount
-       FROM schools s WHERE s.id = ?`,
+       FROM schools s WHERE s.user_id = ? ORDER BY s.id`,
     )
-    .get(id) as School | undefined;
+    .all(userId) as School[];
+}
+
+export function getSchool(id: number, userId: number): School | undefined {
+  return getDb()
+    .prepare(
+      `SELECT s.*, (SELECT COUNT(*) FROM classes c WHERE c.school_id = s.id) AS classCount
+       FROM schools s WHERE s.id = ? AND s.user_id = ?`,
+    )
+    .get(id, userId) as School | undefined;
 }
 
 export function createSchool(
+  userId: number,
   name: string,
   emoji: string,
   description: string,
 ): number {
   const db = getDb();
   let slug = slugify(name);
-  const exists = db.prepare("SELECT 1 FROM schools WHERE slug = ?");
-  if (exists.get(slug)) slug = `${slug}-${Date.now() % 10000}`;
+  const exists = db.prepare("SELECT 1 FROM schools WHERE user_id = ? AND slug = ?");
+  if (exists.get(userId, slug)) slug = `${slug}-${Date.now() % 10000}`;
   return db
     .prepare(
-      "INSERT INTO schools (name, slug, emoji, description) VALUES (?, ?, ?, ?)",
+      "INSERT INTO schools (user_id, name, slug, emoji, description) VALUES (?, ?, ?, ?, ?)",
     )
-    .run(name, slug, emoji, description).lastInsertRowid as number;
+    .run(userId, name, slug, emoji, description).lastInsertRowid as number;
 }
 
 // ---------- Classes ----------
@@ -80,21 +160,22 @@ const CLASS_SELECT = `
     (SELECT COUNT(*) FROM lectures l
        JOIN lecture_progress p ON p.lecture_id = l.id
      WHERE l.class_id = c.id) AS completedCount
-  FROM classes c`;
+  FROM classes c JOIN schools s ON s.id = c.school_id`;
 
-export function listClasses(schoolId: number): ClassRow[] {
+export function listClasses(schoolId: number, userId: number): ClassRow[] {
   return getDb()
-    .prepare(`${CLASS_SELECT} WHERE c.school_id = ? ORDER BY c.id`)
-    .all(schoolId) as ClassRow[];
+    .prepare(`${CLASS_SELECT} WHERE c.school_id = ? AND s.user_id = ? ORDER BY c.id`)
+    .all(schoolId, userId) as ClassRow[];
 }
 
-export function getClass(id: number): ClassRow | undefined {
-  return getDb().prepare(`${CLASS_SELECT} WHERE c.id = ?`).get(id) as
-    | ClassRow
-    | undefined;
+export function getClass(id: number, userId: number): ClassRow | undefined {
+  return getDb()
+    .prepare(`${CLASS_SELECT} WHERE c.id = ? AND s.user_id = ?`)
+    .get(id, userId) as ClassRow | undefined;
 }
 
 export function createClass(
+  userId: number,
   schoolId: number,
   name: string,
   emoji: string,
@@ -102,6 +183,8 @@ export function createClass(
   objective = "",
 ): number {
   const db = getDb();
+  if (!ownsSchool(userId, schoolId))
+    throw new OwnershipError(`school ${schoolId} not found`);
   let slug = slugify(name);
   const exists = db.prepare(
     "SELECT 1 FROM classes WHERE school_id = ? AND slug = ?",
@@ -133,7 +216,9 @@ const LECTURE_SELECT = `
   SELECT l.*,
     EXISTS(SELECT 1 FROM lecture_progress p WHERE p.lecture_id = l.id) AS completed,
     (SELECT COUNT(*) FROM questions q WHERE q.lecture_id = l.id) AS questionCount
-  FROM lectures l`;
+  FROM lectures l
+    JOIN classes c ON c.id = l.class_id
+    JOIN schools s ON s.id = c.school_id`;
 
 function parseLecture(row: LectureDbRow): Lecture {
   return {
@@ -143,21 +228,22 @@ function parseLecture(row: LectureDbRow): Lecture {
   };
 }
 
-export function listLectures(classId: number): Lecture[] {
+export function listLectures(classId: number, userId: number): Lecture[] {
   const rows = getDb()
-    .prepare(`${LECTURE_SELECT} WHERE l.class_id = ?`)
-    .all(classId) as LectureDbRow[];
+    .prepare(`${LECTURE_SELECT} WHERE l.class_id = ? AND s.user_id = ?`)
+    .all(classId, userId) as LectureDbRow[];
   return rows.map(parseLecture).sort(byLadder);
 }
 
-export function getLecture(id: number): Lecture | undefined {
-  const row = getDb().prepare(`${LECTURE_SELECT} WHERE l.id = ?`).get(id) as
-    | LectureDbRow
-    | undefined;
+export function getLecture(id: number, userId: number): Lecture | undefined {
+  const row = getDb()
+    .prepare(`${LECTURE_SELECT} WHERE l.id = ? AND s.user_id = ?`)
+    .get(id, userId) as LectureDbRow | undefined;
   return row ? parseLecture(row) : undefined;
 }
 
 export function createLecture(
+  userId: number,
   classId: number,
   title: string,
   format: LectureFormat,
@@ -166,6 +252,8 @@ export function createLecture(
   questions: NewQuestion[] = [],
 ): number {
   const db = getDb();
+  if (!ownsClass(userId, classId))
+    throw new OwnershipError(`class ${classId} not found`);
   const max = db
     .prepare("SELECT COALESCE(MAX(position), 0) AS m FROM lectures WHERE class_id = ?")
     .get(classId) as { m: number };
@@ -175,12 +263,18 @@ export function createLecture(
     )
     .run(classId, title, format, max.m + 1, summary, JSON.stringify(content))
     .lastInsertRowid as number;
-  if (questions.length) addQuestions(lectureId, questions);
+  if (questions.length) insertQuestions(lectureId, questions);
   return lectureId;
 }
 
-export function addCards(lectureId: number, cards: NewCard[]): number {
+export function addCards(
+  userId: number,
+  lectureId: number,
+  cards: NewCard[],
+): number {
   const db = getDb();
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
   const row = db
     .prepare("SELECT content FROM lectures WHERE id = ?")
     .get(lectureId) as { content: string } | undefined;
@@ -197,7 +291,9 @@ export function addCards(lectureId: number, cards: NewCard[]): number {
   return content.cards.length;
 }
 
-export function addQuestions(lectureId: number, questions: NewQuestion[]) {
+// Bare insert used internally after ownership is already established (e.g. by
+// createLecture on a lecture it just created).
+function insertQuestions(lectureId: number, questions: NewQuestion[]) {
   const ins = getDb().prepare(
     "INSERT INTO questions (lecture_id, prompt, options, answer_index, explanation) VALUES (?, ?, ?, ?, ?)",
   );
@@ -212,11 +308,27 @@ export function addQuestions(lectureId: number, questions: NewQuestion[]) {
   }
 }
 
+export function addQuestions(
+  userId: number,
+  lectureId: number,
+  questions: NewQuestion[],
+) {
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
+  insertQuestions(lectureId, questions);
+}
+
 export function moveLecture(
+  userId: number,
   lectureId: number,
   opts: { classId?: number; position?: number },
 ): void {
   const db = getDb();
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
+  // Can't move a lecture into a class the user doesn't own.
+  if (opts.classId !== undefined && !ownsClass(userId, opts.classId))
+    throw new OwnershipError(`class ${opts.classId} not found`);
   const row = db
     .prepare("SELECT class_id FROM lectures WHERE id = ?")
     .get(lectureId) as { class_id: number } | undefined;
@@ -251,7 +363,9 @@ export function moveLecture(
   }
 }
 
-export function deleteLecture(lectureId: number): void {
+export function deleteLecture(userId: number, lectureId: number): void {
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
   // questions + lecture_progress cascade (FK ON DELETE CASCADE); cards live in
   // the lecture row's JSON, so this single delete removes everything.
   const info = getDb().prepare("DELETE FROM lectures WHERE id = ?").run(lectureId);
@@ -260,11 +374,11 @@ export function deleteLecture(lectureId: number): void {
 
 // ---------- Progress ----------
 
-export function markLectureComplete(lectureId: number) {
+export function markLectureComplete(userId: number, lectureId: number) {
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
   getDb()
-    .prepare(
-      "INSERT OR IGNORE INTO lecture_progress (lecture_id) VALUES (?)",
-    )
+    .prepare("INSERT OR IGNORE INTO lecture_progress (lecture_id) VALUES (?)")
     .run(lectureId);
 }
 
@@ -282,17 +396,20 @@ interface QuestionDbRow {
 /**
  * Questions eligible for a class test right now: only those belonging to
  * lectures the user has completed — "test only what was learned so far".
+ * Scoped to the caller's own content via the schools join.
  */
-export function getTestQuestions(classId: number): Question[] {
+export function getTestQuestions(classId: number, userId: number): Question[] {
   const rows = getDb()
     .prepare(
       `SELECT q.* FROM questions q
        JOIN lectures l ON l.id = q.lecture_id
        JOIN lecture_progress p ON p.lecture_id = l.id
-       WHERE l.class_id = ?
+       JOIN classes c ON c.id = l.class_id
+       JOIN schools s ON s.id = c.school_id
+       WHERE l.class_id = ? AND s.user_id = ?
        ORDER BY l.position, l.id, q.id`,
     )
-    .all(classId) as QuestionDbRow[];
+    .all(classId, userId) as QuestionDbRow[];
   return rows.map((r) => ({
     ...r,
     options: JSON.parse(r.options) as string[],
@@ -300,11 +417,14 @@ export function getTestQuestions(classId: number): Question[] {
 }
 
 export function recordTestAttempt(
+  userId: number,
   classId: number,
   score: number,
   total: number,
   detail: unknown = [],
 ): number {
+  if (!ownsClass(userId, classId))
+    throw new OwnershipError(`class ${classId} not found`);
   return getDb()
     .prepare(
       "INSERT INTO test_attempts (class_id, score, total, detail) VALUES (?, ?, ?, ?)",
@@ -312,12 +432,17 @@ export function recordTestAttempt(
     .run(classId, score, total, JSON.stringify(detail)).lastInsertRowid as number;
 }
 
-export function listTestAttempts(classId: number): TestAttempt[] {
+export function listTestAttempts(classId: number, userId: number): TestAttempt[] {
   return getDb()
     .prepare(
-      "SELECT id, class_id, score, total, taken_at FROM test_attempts WHERE class_id = ? ORDER BY id DESC",
+      `SELECT t.id, t.class_id, t.score, t.total, t.taken_at
+       FROM test_attempts t
+       JOIN classes c ON c.id = t.class_id
+       JOIN schools s ON s.id = c.school_id
+       WHERE t.class_id = ? AND s.user_id = ?
+       ORDER BY t.id DESC`,
     )
-    .all(classId) as TestAttempt[];
+    .all(classId, userId) as TestAttempt[];
 }
 
 // ---------- Agent helpers ----------
@@ -325,10 +450,10 @@ export function listTestAttempts(classId: number): TestAttempt[] {
 /**
  * Compact catalog summary for the companion agent. Pipe-delimited lines keep
  * the tool result small (token frugality) while giving the model every ID it
- * needs to place new content.
+ * needs to place new content. Scoped to the signed-in user's universe only.
  */
-export function getCatalogSummary(): string {
-  const schools = listSchools();
+export function getCatalogSummary(userId: number): string {
+  const schools = listSchools(userId);
   if (!schools.length) return "(empty — no schools yet)";
   const lines: string[] = [];
   const db = getDb();
@@ -341,7 +466,7 @@ export function getCatalogSummary(): string {
     for (const c of classes) {
       lines.push(`  class ${c.id}: ${c.name}`);
       // listLectures applies the difficulty-ladder ordering used everywhere.
-      for (const l of listLectures(c.id)) {
+      for (const l of listLectures(c.id, userId)) {
         const diff = l.content.difficulty ? ` (${l.content.difficulty})` : "";
         lines.push(`    lecture ${l.id}: ${l.title}${diff}`);
       }

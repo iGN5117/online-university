@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
@@ -9,10 +10,17 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
 import { useColorScheme } from "@mui/material/styles";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function ColorModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -51,6 +59,53 @@ function ColorModeToggle() {
   );
 }
 
+function UserMenu() {
+  const { data: session } = useSession();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  if (!session?.user) return null;
+
+  const { name, email, image } = session.user;
+
+  return (
+    <>
+      <Tooltip title={name || email || "Account"}>
+        <IconButton
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          size="small"
+          aria-label="Account menu"
+        >
+          <Avatar src={image ?? undefined} sx={{ width: 32, height: 32 }}>
+            {(name || email || "?").charAt(0).toUpperCase()}
+          </Avatar>
+        </IconButton>
+      </Tooltip>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem disabled sx={{ opacity: "1 !important" }}>
+          <ListItemText
+            primary={name || "Signed in"}
+            secondary={email}
+            slotProps={{ primary: { sx: { fontWeight: 600 } } }}
+          />
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => signOut({ redirectTo: "/login" })}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          Sign out
+        </MenuItem>
+      </Menu>
+    </>
+  );
+}
+
 export default function Header() {
   return (
     <AppBar
@@ -82,6 +137,7 @@ export default function Header() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <ColorModeToggle />
+          <UserMenu />
         </Toolbar>
       </Container>
     </AppBar>

@@ -6,6 +6,7 @@ import MuiLink from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import { getLecture, getClass, listLectures } from "@/lib/data";
+import { requireUser } from "@/lib/auth";
 import LectureCards from "@/components/LectureCards";
 import TeacherChat from "@/components/TeacherChat";
 
@@ -16,21 +17,22 @@ export default async function LecturePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const userId = await requireUser();
   const { id } = await params;
   const numId = Number(id);
-  const lecture = getLecture(numId);
+  const lecture = getLecture(numId, userId);
 
   if (!lecture) {
     notFound();
   }
 
-  const cls = getClass(lecture.class_id);
+  const cls = getClass(lecture.class_id, userId);
   if (!cls) {
     notFound();
   }
 
   // Get all lectures in this class to find next/prev
-  const classLectures = listLectures(lecture.class_id);
+  const classLectures = listLectures(lecture.class_id, userId);
   const currentIndex = classLectures.findIndex((l) => l.id === numId);
   const nextLecture =
     currentIndex >= 0 && currentIndex < classLectures.length - 1

@@ -11,6 +11,7 @@ import {
   getLecture,
   getClass,
   listLectures,
+  OwnershipError,
 } from "./data";
 import type { NewCard, NewQuestion, Difficulty } from "./types";
 
@@ -206,7 +207,7 @@ function wantsManagement(text: string): boolean {
   );
 }
 
-function systemPrompt(includeManagement: boolean): string {
+function systemPrompt(userId: number, includeManagement: boolean): string {
   const management = includeManagement
     ? `
 - Lecture management is available now: move_lecture (change class and/or reorder) and delete_lecture. Only do this when the user clearly asks. To move a lecture into a class that doesn't exist yet, call move_lecture with to_new_class_name in a SINGLE call (it creates the class in the lecture's school and moves it) — do NOT create the class separately. After a delete, confirm what you removed in one short sentence.`
@@ -229,10 +230,11 @@ Rules:
 - Be brief. Confirm what you created in 1-2 sentences. Never repeat card content back in chat.${management}
 
 Current catalog (id: name):
-${getCatalogSummary()}`;
+${getCatalogSummary(userId)}`;
 }
 
 function executeTool(
+  userId: number,
   name: string,
   input: Record<string, unknown>,
   actions: AgentAction[],
@@ -240,6 +242,7 @@ function executeTool(
   switch (name) {
     case "create_school": {
       const id = createSchool(
+        userId,
         input.name as string,
         input.emoji as string,
         input.description as string,
@@ -249,6 +252,7 @@ function executeTool(
     }
     case "create_class": {
       const id = createClass(
+        userId,
         input.school_id as number,
         input.name as string,
         input.emoji as string,
@@ -261,6 +265,7 @@ function executeTool(
     case "create_lecture": {
       const cards = input.cards as NewCard[];
       const id = createLecture(
+        userId,
         input.class_id as number,
         input.title as string,
         "cards",
@@ -276,7 +281,11 @@ function executeTool(
       return `lecture_id=${id}`;
     }
     case "add_cards": {
-      const total = addCards(input.lecture_id as number, input.cards as NewCard[]);
+      const total = addCards(
+        userId,
+        input.lecture_id as number,
+        input.cards as NewCard[],
+      );
       actions.push({
         kind: "cards",
         id: input.lecture_id as number,
@@ -285,7 +294,11 @@ function executeTool(
       return `ok, lecture now has ${total} cards`;
     }
     case "add_questions": {
-      addQuestions(input.lecture_id as number, input.questions as NewQuestion[]);
+      addQuestions(
+        userId,
+        input.lecture_id as number,
+        input.questions as NewQuestion[],
+      );
       return "ok";
     }
     case "move_lecture": {
@@ -295,11 +308,12 @@ function executeTool(
       // Atomic: create the destination class in the lecture's school if needed,
       // so the move never depends on the model chaining two tool calls.
       if (!targetClassId && newName) {
-        const lecture = getLecture(lectureId);
-        if (!lecture) throw new Error(`lecture ${lectureId} not found`);
-        const cur = getClass(lecture.class_id);
-        if (!cur) throw new Error(`class ${lecture.class_id} not found`);
+        const lecture = getLecture(lectureId, userId);
+        if (!lecture) throw new OwnershipError(`lecture ${lectureId} not found`);
+        const cur = getClass(lecture.class_id, userId);
+        if (!cur) throw new OwnershipError(`class ${lecture.class_id} not found`);
         targetClassId = createClass(
+          userId,
           cur.school_id,
           newName,
           (input.emoji as string) || "📚",
@@ -308,13 +322,13 @@ function executeTool(
         );
         actions.push({ kind: "class", id: targetClassId, label: newName });
       }
-      moveLecture(lectureId, { classId: targetClassId });
+      moveLecture(userId, lectureId, { classId: targetClassId });
       actions.push({ kind: "moved", id: lectureId, label: `lecture ${lectureId}` });
       return `ok, moved lecture ${lectureId}`;
     }
     case "delete_lecture": {
       const lectureId = input.lecture_id as number;
-      deleteLecture(lectureId);
+      deleteLecture(userId, lectureId);
       actions.push({ kind: "deleted", id: lectureId, label: `lecture ${lectureId}` });
       return `ok, deleted lecture ${lectureId}`;
     }
@@ -328,6 +342,7 @@ function executeTool(
  * from the client (tool blocks are never round-tripped to the browser).
  */
 export async function runAgentTurn(
+  userId: number,
   history: { role: "user" | "assistant"; content: string }[],
 ): Promise<AgentTurnResult> {
   const client = new Anthropic();
@@ -344,7 +359,7 @@ export async function runAgentTurn(
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      system: systemPrompt(includeManagement),
+      system: systemPrompt(userId, includeManagement),
       tools,
       messages,
     });
@@ -368,6 +383,7 @@ export async function runAgentTurn(
           type: "tool_result",
           tool_use_id: tu.id,
           content: executeTool(
+            userId,
             tu.name,
             tu.input as Record<string, unknown>,
             actions,
@@ -394,10 +410,11 @@ export async function runAgentTurn(
  */
 export async function runTeacherTurn(
   lectureId: number,
+  userId: number,
   history: { role: "user" | "assistant"; content: string }[],
 ): Promise<{ reply: string }> {
-  const lecture = getLecture(lectureId);
-  if (!lecture) throw new Error(`lecture ${lectureId} not found`);
+  const lecture = getLecture(lectureId, userId);
+  if (!lecture) throw new OwnershipError(`lecture ${lectureId} not found`);
 
   const cards = lecture.content.cards ?? [];
   const rationale = lecture.content.rationale ?? lecture.summary;
@@ -448,15 +465,18 @@ export type DeepenResult =
   | { status: "added"; lectureId: number; title: string; difficulty: Difficulty }
   | { status: "complete"; reason: string };
 
-export async function deepenClass(classId: number): Promise<DeepenResult> {
-  const cls = getClass(classId);
-  if (!cls) throw new Error(`class ${classId} not found`);
+export async function deepenClass(
+  classId: number,
+  userId: number,
+): Promise<DeepenResult> {
+  const cls = getClass(classId, userId);
+  if (!cls) throw new OwnershipError(`class ${classId} not found`);
 
   // What this class is actually for — the boundary "go deeper" must respect.
   // Falls back to description/name for classes created before objectives existed.
   const objective = cls.objective?.trim() || cls.description?.trim() || cls.name;
 
-  const existing = listLectures(classId);
+  const existing = listLectures(classId, userId);
   const covered =
     existing
       .map(
@@ -557,6 +577,7 @@ Decide between two actions:
   };
 
   const lectureId = createLecture(
+    userId,
     classId,
     input.title,
     "cards",

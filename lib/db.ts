@@ -1,7 +1,6 @@
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
-import { seed } from "./seed";
 
 // Cache the connection on globalThis so Next.js dev-mode hot reloads reuse it
 // instead of opening a new handle per module evaluation.
@@ -16,13 +15,23 @@ function init(): Database.Database {
   db.pragma("foreign_keys = ON");
 
   db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL DEFAULT '',
+      image TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS schools (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
-      slug TEXT NOT NULL UNIQUE,
+      slug TEXT NOT NULL,
       emoji TEXT NOT NULL DEFAULT '🎓',
       description TEXT NOT NULL DEFAULT '',
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE (user_id, slug)
     );
 
     CREATE TABLE IF NOT EXISTS classes (
@@ -80,10 +89,17 @@ function init(): Database.Database {
     db.exec("ALTER TABLE classes ADD COLUMN objective TEXT NOT NULL DEFAULT ''");
   }
 
-  const count = db.prepare("SELECT COUNT(*) AS n FROM schools").get() as {
-    n: number;
-  };
-  if (count.n === 0) seed(db);
+  // Migration: add schools.user_id to DBs created before multi-user support.
+  // (The old single-tenant DB has a global UNIQUE on slug we can't drop via
+  // ALTER; that's harmless — slug is never read, and createSchool dedupes
+  // per-user with a suffix fallback.) Pre-existing schools are left NULL-owned
+  // and claimed by OWNER_EMAIL on login (see getOrCreateUser in data.ts).
+  const schoolCols = db.prepare("PRAGMA table_info(schools)").all() as {
+    name: string;
+  }[];
+  if (!schoolCols.some((c) => c.name === "user_id")) {
+    db.exec("ALTER TABLE schools ADD COLUMN user_id INTEGER REFERENCES users(id)");
+  }
 
   return db;
 }

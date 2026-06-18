@@ -5,11 +5,13 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import { listSchools } from "@/lib/data";
+import { requireUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const schools = listSchools();
+export default async function Home() {
+  const userId = await requireUser();
+  const schools = listSchools(userId);
 
   return (
     <Stack spacing={4}>

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { recordTestAttempt } from "@/lib/data";
+import { recordTestAttempt, OwnershipError } from "@/lib/data";
+import { auth } from "@/auth";
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (typeof session?.userId !== "number") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { classId, score, total, detail } = body;
@@ -26,10 +32,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Record the attempt
-    recordTestAttempt(classId, score, total, detail);
+    recordTestAttempt(session.userId, classId, score, total, detail);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    if (error instanceof OwnershipError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     console.error("Error recording test attempt:", error);
     return NextResponse.json(
       { error: "Failed to record test attempt" },
