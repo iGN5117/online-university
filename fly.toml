@@ -1,35 +1,28 @@
-# Fly.io deployment. The Dockerfile is portable, so Railway/Render work too.
+# fly.toml app configuration file generated for online-university on 2026-06-18T08:51:23-04:00
 #
-# One-time setup:
-#   fly launch --no-deploy        # or `fly apps create online-university`
-#   fly volumes create university_data --region iad --size 1
-#   fly secrets set ANTHROPIC_API_KEY=sk-ant-...    # required by /api/* routes
-#   fly deploy
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
-# IMPORTANT: SQLite is single-writer — keep this app to ONE machine.
-# Do not `fly scale count` above 1 or the database can corrupt.
 
-app = "online-university"
-primary_region = "iad"
+app = 'online-university'
+primary_region = 'iad'
 
 [build]
 
 [env]
-  DB_DIR = "/data"
-  PORT = "3000"
-  # AGENT_MODEL = "claude-haiku-4-5"  # optional override (this is the default)
+  DB_DIR = '/data'
+  PORT = '3000'
+
+[[mounts]]
+  source = 'university_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
-[mounts]
-  source = "university_data"
-  destination = "/data"
-
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "512mb"
+  size = 'shared-cpu-1x'
+  memory = '512mb'
