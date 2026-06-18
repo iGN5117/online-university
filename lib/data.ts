@@ -115,6 +115,53 @@ export function getOrCreateUser(
   return id;
 }
 
+// ---------- Invite gate (allowed emails) ----------
+
+// True for the OWNER_EMAIL — the account that always has access and runs /admin.
+export function isOwnerEmail(email: string | null | undefined): boolean {
+  const owner = process.env.OWNER_EMAIL?.toLowerCase();
+  return !!owner && !!email && email.toLowerCase() === owner;
+}
+
+/**
+ * Whether an email may sign in. Allowed if it's the owner, in the env
+ * ALLOWED_EMAILS break-glass list, or in the runtime allowed_emails table
+ * (managed via /admin). Checked in the auth signIn callback.
+ */
+export function isEmailAllowed(email: string | null | undefined): boolean {
+  const e = email?.trim().toLowerCase();
+  if (!e) return false;
+  if (isOwnerEmail(e)) return true;
+  const envList = (process.env.ALLOWED_EMAILS ?? "")
+    .split(",")
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
+  if (envList.includes(e)) return true;
+  return !!getDb()
+    .prepare("SELECT 1 FROM allowed_emails WHERE email = ?")
+    .get(e);
+}
+
+export function listAllowedEmails(): string[] {
+  return (
+    getDb()
+      .prepare("SELECT email FROM allowed_emails ORDER BY email")
+      .all() as { email: string }[]
+  ).map((r) => r.email);
+}
+
+export function addAllowedEmail(email: string): void {
+  getDb()
+    .prepare("INSERT OR IGNORE INTO allowed_emails (email) VALUES (?)")
+    .run(email.trim().toLowerCase());
+}
+
+export function removeAllowedEmail(email: string): void {
+  getDb()
+    .prepare("DELETE FROM allowed_emails WHERE email = ?")
+    .run(email.trim().toLowerCase());
+}
+
 // ---------- Schools ----------
 
 export function listSchools(userId: number): School[] {

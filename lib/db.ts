@@ -79,6 +79,15 @@ function init(): Database.Database {
       detail TEXT NOT NULL DEFAULT '[]',
       taken_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    -- Invite gate: emails allowed to sign in, managed at runtime from /admin so
+    -- the owner can add people without re-deploying. The env ALLOWED_EMAILS and
+    -- OWNER_EMAIL remain as a break-glass fallback (see isEmailAllowed). NOCASE
+    -- so the address is matched case-insensitively.
+    CREATE TABLE IF NOT EXISTS allowed_emails (
+      email TEXT PRIMARY KEY COLLATE NOCASE,
+      added_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
   // Migration: add classes.objective to DBs created before it existed.

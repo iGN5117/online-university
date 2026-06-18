@@ -21,6 +21,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 function ColorModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -95,6 +96,18 @@ function UserMenu() {
           />
         </MenuItem>
         <Divider />
+        {session.isOwner && (
+          <MenuItem
+            component={Link}
+            href="/admin"
+            onClick={() => setAnchorEl(null)}
+          >
+            <ListItemIcon>
+              <ManageAccountsIcon fontSize="small" />
+            </ListItemIcon>
+            Manage access
+          </MenuItem>
+        )}
         <MenuItem onClick={() => signOut({ redirectTo: "/login" })}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />

@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local secrets / scratch notes (never commit — contains live credentials)
+stuff.md
+
 # local database
 data/
 
