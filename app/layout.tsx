@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -21,6 +21,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Online University",
   description: "Learn anything in bite-size cards.",
+  // Full-screen, native-feeling launch from the iOS home screen.
+  appleWebApp: { capable: true, title: "University", statusBarStyle: "default" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2f8f86",
+  // Extend behind the notch so the reel's safe-area insets do the spacing.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

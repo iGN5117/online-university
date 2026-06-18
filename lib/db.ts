@@ -8,7 +8,8 @@ import { seed } from "./seed";
 const globalForDb = globalThis as unknown as { __db?: Database.Database };
 
 function init(): Database.Database {
-  const dataDir = path.join(process.cwd(), "data");
+  // DB_DIR lets a deploy point the database at a mounted persistent volume.
+  const dataDir = process.env.DB_DIR ?? path.join(process.cwd(), "data");
   fs.mkdirSync(dataDir, { recursive: true });
   const db = new Database(path.join(dataDir, "university.db"));
   db.pragma("journal_mode = WAL");

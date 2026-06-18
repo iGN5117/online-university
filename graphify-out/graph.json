@@ -100,7 +100,7 @@
       "source_file": "next-env.d.ts",
       "source_location": "L1",
       "id": "next_env_d_ts",
-      "community": 15,
+      "community": 18,
       "norm_label": "next-env.d.ts"
     },
     {
@@ -109,7 +109,7 @@
       "source_file": "eslint.config.mjs",
       "source_location": "L1",
       "id": "eslint_config_mjs",
-      "community": 11,
+      "community": 13,
       "norm_label": "eslint.config.mjs"
     },
     {
@@ -118,7 +118,7 @@
       "source_file": "eslint.config.mjs",
       "source_location": "L5",
       "id": "online_university_eslint_config_eslintconfig",
-      "community": 11,
+      "community": 13,
       "norm_label": "eslintconfig"
     },
     {
@@ -127,7 +127,7 @@
       "source_file": "next.config.ts",
       "source_location": "L1",
       "id": "next_config_ts",
-      "community": 12,
+      "community": 14,
       "norm_label": "next.config.ts"
     },
     {
@@ -136,8 +136,62 @@
       "source_file": "next.config.ts",
       "source_location": "L3",
       "id": "online_university_next_config_nextconfig",
-      "community": 12,
+      "community": 14,
       "norm_label": "nextconfig"
+    },
+    {
+      "label": "apple-icon.tsx",
+      "file_type": "code",
+      "source_file": "app/apple-icon.tsx",
+      "source_location": "L1",
+      "id": "app_apple_icon_tsx",
+      "community": 10,
+      "norm_label": "apple-icon.tsx"
+    },
+    {
+      "label": "size",
+      "file_type": "code",
+      "source_file": "app/apple-icon.tsx",
+      "source_location": "L4",
+      "id": "app_apple_icon_size",
+      "community": 10,
+      "norm_label": "size"
+    },
+    {
+      "label": "AppleIcon()",
+      "file_type": "code",
+      "source_file": "app/apple-icon.tsx",
+      "source_location": "L7",
+      "id": "app_apple_icon_appleicon",
+      "community": 10,
+      "norm_label": "appleicon()"
+    },
+    {
+      "label": "icon.tsx",
+      "file_type": "code",
+      "source_file": "app/icon.tsx",
+      "source_location": "L1",
+      "id": "app_icon_tsx",
+      "community": 11,
+      "norm_label": "icon.tsx"
+    },
+    {
+      "label": "size",
+      "file_type": "code",
+      "source_file": "app/icon.tsx",
+      "source_location": "L4",
+      "id": "app_icon_size",
+      "community": 11,
+      "norm_label": "size"
+    },
+    {
+      "label": "Icon()",
+      "file_type": "code",
+      "source_file": "app/icon.tsx",
+      "source_location": "L7",
+      "id": "app_icon_icon",
+      "community": 11,
+      "norm_label": "icon()"
     },
     {
       "label": "layout.tsx",
@@ -176,13 +230,40 @@
       "norm_label": "metadata"
     },
     {
+      "label": "viewport",
+      "file_type": "code",
+      "source_file": "app/layout.tsx",
+      "source_location": "L28",
+      "id": "app_layout_viewport",
+      "community": 3,
+      "norm_label": "viewport"
+    },
+    {
       "label": "RootLayout()",
       "file_type": "code",
       "source_file": "app/layout.tsx",
-      "source_location": "L26",
+      "source_location": "L34",
       "id": "app_layout_rootlayout",
       "community": 3,
       "norm_label": "rootlayout()"
+    },
+    {
+      "label": "manifest.ts",
+      "file_type": "code",
+      "source_file": "app/manifest.ts",
+      "source_location": "L1",
+      "id": "app_manifest_ts",
+      "community": 15,
+      "norm_label": "manifest.ts"
+    },
+    {
+      "label": "manifest()",
+      "file_type": "code",
+      "source_file": "app/manifest.ts",
+      "source_location": "L3",
+      "id": "app_manifest_manifest",
+      "community": 15,
+      "norm_label": "manifest()"
     },
     {
       "label": "page.tsx",
@@ -190,7 +271,7 @@
       "source_file": "app/page.tsx",
       "source_location": "L1",
       "id": "app_page_tsx",
-      "community": 2,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -199,7 +280,7 @@
       "source_file": "app/page.tsx",
       "source_location": "L11",
       "id": "app_page_home",
-      "community": 2,
+      "community": 12,
       "norm_label": "home()"
     },
     {
@@ -244,7 +325,7 @@
       "source_file": "app/class/[id]/test/page.tsx",
       "source_location": "L1",
       "id": "app_class_id_test_page_tsx",
-      "community": 6,
+      "community": 4,
       "norm_label": "page.tsx"
     },
     {
@@ -253,7 +334,7 @@
       "source_file": "app/class/[id]/test/page.tsx",
       "source_location": "L14",
       "id": "test_page_testpage",
-      "community": 6,
+      "community": 4,
       "norm_label": "testpage()"
     },
     {
@@ -262,7 +343,7 @@
       "source_file": "app/api/deepen/route.ts",
       "source_location": "L1",
       "id": "app_api_deepen_route_ts",
-      "community": 4,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -271,7 +352,7 @@
       "source_file": "app/api/deepen/route.ts",
       "source_location": "L6",
       "id": "deepen_route_post",
-      "community": 4,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -280,7 +361,7 @@
       "source_file": "app/api/tests/route.ts",
       "source_location": "L1",
       "id": "app_api_tests_route_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -289,7 +370,7 @@
       "source_file": "app/api/tests/route.ts",
       "source_location": "L4",
       "id": "tests_route_post",
-      "community": 2,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -298,7 +379,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L1",
       "id": "app_api_agent_route_ts",
-      "community": 1,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -307,7 +388,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L6",
       "id": "agent_route_chatturn",
-      "community": 1,
+      "community": 2,
       "norm_label": "chatturn"
     },
     {
@@ -316,7 +397,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L11",
       "id": "agent_route_post",
-      "community": 1,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -325,7 +406,7 @@
       "source_file": "app/api/lectures/complete/route.ts",
       "source_location": "L1",
       "id": "app_api_lectures_complete_route_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -334,7 +415,7 @@
       "source_file": "app/api/lectures/complete/route.ts",
       "source_location": "L4",
       "id": "complete_route_post",
-      "community": 2,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -343,7 +424,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L1",
       "id": "app_api_teacher_route_ts",
-      "community": 1,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -352,7 +433,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L6",
       "id": "teacher_route_chatturn",
-      "community": 1,
+      "community": 2,
       "norm_label": "chatturn"
     },
     {
@@ -361,7 +442,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L11",
       "id": "teacher_route_post",
-      "community": 1,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -401,12 +482,66 @@
       "norm_label": "themeregistry()"
     },
     {
+      "label": "LectureCards.tsx",
+      "file_type": "code",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L1",
+      "id": "components_lecturecards_tsx",
+      "community": 5,
+      "norm_label": "lecturecards.tsx"
+    },
+    {
+      "label": "LectureCardsProps",
+      "file_type": "code",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L8",
+      "id": "components_lecturecards_lecturecardsprops",
+      "community": 5,
+      "norm_label": "lecturecardsprops"
+    },
+    {
+      "label": "LectureCards()",
+      "file_type": "code",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L16",
+      "id": "components_lecturecards_lecturecards",
+      "community": 5,
+      "norm_label": "lecturecards()"
+    },
+    {
+      "label": "ReelViewer.tsx",
+      "file_type": "code",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L1",
+      "id": "components_reelviewer_tsx",
+      "community": 5,
+      "norm_label": "reelviewer.tsx"
+    },
+    {
+      "label": "ReelViewerProps",
+      "file_type": "code",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L17",
+      "id": "components_reelviewer_reelviewerprops",
+      "community": 5,
+      "norm_label": "reelviewerprops"
+    },
+    {
+      "label": "ReelViewer()",
+      "file_type": "code",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L26",
+      "id": "components_reelviewer_reelviewer",
+      "community": 5,
+      "norm_label": "reelviewer()"
+    },
+    {
       "label": "TestRunner.tsx",
       "file_type": "code",
       "source_file": "components/TestRunner.tsx",
       "source_location": "L1",
       "id": "components_testrunner_tsx",
-      "community": 6,
+      "community": 1,
       "norm_label": "testrunner.tsx"
     },
     {
@@ -415,7 +550,7 @@
       "source_file": "components/TestRunner.tsx",
       "source_location": "L14",
       "id": "components_testrunner_testrunnerprops",
-      "community": 6,
+      "community": 1,
       "norm_label": "testrunnerprops"
     },
     {
@@ -424,7 +559,7 @@
       "source_file": "components/TestRunner.tsx",
       "source_location": "L19",
       "id": "components_testrunner_testdetail",
-      "community": 6,
+      "community": 1,
       "norm_label": "testdetail"
     },
     {
@@ -433,7 +568,7 @@
       "source_file": "components/TestRunner.tsx",
       "source_location": "L25",
       "id": "components_testrunner_teststate",
-      "community": 6,
+      "community": 1,
       "norm_label": "teststate"
     },
     {
@@ -442,7 +577,7 @@
       "source_file": "components/TestRunner.tsx",
       "source_location": "L27",
       "id": "components_testrunner_testrunner",
-      "community": 6,
+      "community": 1,
       "norm_label": "testrunner()"
     },
     {
@@ -469,7 +604,7 @@
       "source_file": "components/DeepenButton.tsx",
       "source_location": "L1",
       "id": "components_deepenbutton_tsx",
-      "community": 9,
+      "community": 5,
       "norm_label": "deepenbutton.tsx"
     },
     {
@@ -478,25 +613,25 @@
       "source_file": "components/DeepenButton.tsx",
       "source_location": "L11",
       "id": "components_deepenbutton_deepenresult",
-      "community": 9,
+      "community": 5,
       "norm_label": "deepenresult"
     },
     {
       "label": "ErrorResponse",
       "file_type": "code",
       "source_file": "components/DeepenButton.tsx",
-      "source_location": "L17",
+      "source_location": "L15",
       "id": "components_deepenbutton_errorresponse",
-      "community": 9,
+      "community": 5,
       "norm_label": "errorresponse"
     },
     {
       "label": "DeepenButton()",
       "file_type": "code",
       "source_file": "components/DeepenButton.tsx",
-      "source_location": "L21",
+      "source_location": "L19",
       "id": "components_deepenbutton_deepenbutton",
-      "community": 9,
+      "community": 5,
       "norm_label": "deepenbutton()"
     },
     {
@@ -649,7 +784,7 @@
       "source_file": "components/CardViewer.tsx",
       "source_location": "L1",
       "id": "components_cardviewer_tsx",
-      "community": 9,
+      "community": 5,
       "norm_label": "cardviewer.tsx"
     },
     {
@@ -658,7 +793,7 @@
       "source_file": "components/CardViewer.tsx",
       "source_location": "L18",
       "id": "components_cardviewer_cardviewerprops",
-      "community": 9,
+      "community": 5,
       "norm_label": "cardviewerprops"
     },
     {
@@ -667,7 +802,7 @@
       "source_file": "components/CardViewer.tsx",
       "source_location": "L24",
       "id": "components_cardviewer_cardviewer",
-      "community": 9,
+      "community": 5,
       "norm_label": "cardviewer()"
     },
     {
@@ -676,7 +811,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L1",
       "id": "lib_data_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "data.ts"
     },
     {
@@ -685,7 +820,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L17",
       "id": "lib_data_difficulty_rank",
-      "community": 2,
+      "community": 1,
       "norm_label": "difficulty_rank"
     },
     {
@@ -694,7 +829,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L24",
       "id": "lib_data_byladder",
-      "community": 2,
+      "community": 1,
       "norm_label": "byladder()"
     },
     {
@@ -703,7 +838,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L30",
       "id": "lib_data_slugify",
-      "community": 1,
+      "community": 2,
       "norm_label": "slugify()"
     },
     {
@@ -712,7 +847,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L41",
       "id": "lib_data_listschools",
-      "community": 2,
+      "community": 12,
       "norm_label": "listschools()"
     },
     {
@@ -730,7 +865,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L59",
       "id": "lib_data_createschool",
-      "community": 1,
+      "community": 2,
       "norm_label": "createschool()"
     },
     {
@@ -757,23 +892,23 @@
       "source_file": "lib/data.ts",
       "source_location": "L97",
       "id": "lib_data_createclass",
-      "community": 1,
+      "community": 2,
       "norm_label": "createclass()"
     },
     {
       "label": "LectureDbRow",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L118",
+      "source_location": "L120",
       "id": "lib_data_lecturedbrow",
-      "community": 2,
+      "community": 1,
       "norm_label": "lecturedbrow"
     },
     {
       "label": "parseLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L136",
+      "source_location": "L138",
       "id": "lib_data_parselecture",
       "community": 4,
       "norm_label": "parselecture()"
@@ -782,7 +917,7 @@
       "label": "listLectures()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L144",
+      "source_location": "L146",
       "id": "lib_data_listlectures",
       "community": 4,
       "norm_label": "listlectures()"
@@ -791,7 +926,7 @@
       "label": "getLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L151",
+      "source_location": "L153",
       "id": "lib_data_getlecture",
       "community": 4,
       "norm_label": "getlecture()"
@@ -800,99 +935,99 @@
       "label": "createLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L158",
+      "source_location": "L160",
       "id": "lib_data_createlecture",
-      "community": 1,
+      "community": 2,
       "norm_label": "createlecture()"
     },
     {
       "label": "addCards()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L180",
+      "source_location": "L182",
       "id": "lib_data_addcards",
-      "community": 1,
+      "community": 2,
       "norm_label": "addcards()"
     },
     {
       "label": "addQuestions()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L198",
+      "source_location": "L200",
       "id": "lib_data_addquestions",
-      "community": 1,
+      "community": 2,
       "norm_label": "addquestions()"
     },
     {
       "label": "moveLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L213",
+      "source_location": "L215",
       "id": "lib_data_movelecture",
-      "community": 1,
+      "community": 2,
       "norm_label": "movelecture()"
     },
     {
       "label": "deleteLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L252",
+      "source_location": "L254",
       "id": "lib_data_deletelecture",
-      "community": 1,
+      "community": 2,
       "norm_label": "deletelecture()"
     },
     {
       "label": "markLectureComplete()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L261",
+      "source_location": "L263",
       "id": "lib_data_marklecturecomplete",
-      "community": 2,
+      "community": 1,
       "norm_label": "marklecturecomplete()"
     },
     {
       "label": "QuestionDbRow",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L271",
+      "source_location": "L273",
       "id": "lib_data_questiondbrow",
-      "community": 2,
+      "community": 1,
       "norm_label": "questiondbrow"
     },
     {
       "label": "getTestQuestions()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L284",
+      "source_location": "L286",
       "id": "lib_data_gettestquestions",
-      "community": 6,
+      "community": 4,
       "norm_label": "gettestquestions()"
     },
     {
       "label": "recordTestAttempt()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L300",
+      "source_location": "L302",
       "id": "lib_data_recordtestattempt",
-      "community": 2,
+      "community": 1,
       "norm_label": "recordtestattempt()"
     },
     {
       "label": "listTestAttempts()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L313",
+      "source_location": "L315",
       "id": "lib_data_listtestattempts",
-      "community": 6,
+      "community": 4,
       "norm_label": "listtestattempts()"
     },
     {
       "label": "getCatalogSummary()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L328",
+      "source_location": "L330",
       "id": "lib_data_getcatalogsummary",
-      "community": 1,
+      "community": 2,
       "norm_label": "getcatalogsummary()"
     },
     {
@@ -901,7 +1036,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L1",
       "id": "lib_agent_ts",
-      "community": 1,
+      "community": 2,
       "norm_label": "agent.ts"
     },
     {
@@ -910,7 +1045,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L17",
       "id": "lib_agent_difficulty_levels",
-      "community": 1,
+      "community": 2,
       "norm_label": "difficulty_levels"
     },
     {
@@ -919,7 +1054,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L31",
       "id": "lib_agent_agentaction",
-      "community": 1,
+      "community": 2,
       "norm_label": "agentaction"
     },
     {
@@ -928,7 +1063,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L37",
       "id": "lib_agent_agentturnresult",
-      "community": 1,
+      "community": 2,
       "norm_label": "agentturnresult"
     },
     {
@@ -937,7 +1072,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L42",
       "id": "lib_agent_card_schema",
-      "community": 1,
+      "community": 2,
       "norm_label": "card_schema"
     },
     {
@@ -946,7 +1081,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L57",
       "id": "lib_agent_question_schema",
-      "community": 1,
+      "community": 2,
       "norm_label": "question_schema"
     },
     {
@@ -955,70 +1090,79 @@
       "source_file": "lib/agent.ts",
       "source_location": "L68",
       "id": "lib_agent_tools",
-      "community": 1,
+      "community": 2,
       "norm_label": "tools"
     },
     {
       "label": "MANAGEMENT_TOOLS",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L156",
+      "source_location": "L161",
       "id": "lib_agent_management_tools",
-      "community": 1,
+      "community": 2,
       "norm_label": "management_tools"
     },
     {
       "label": "wantsManagement()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L198",
+      "source_location": "L203",
       "id": "lib_agent_wantsmanagement",
-      "community": 1,
+      "community": 2,
       "norm_label": "wantsmanagement()"
     },
     {
       "label": "systemPrompt()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L204",
+      "source_location": "L209",
       "id": "lib_agent_systemprompt",
-      "community": 1,
+      "community": 2,
       "norm_label": "systemprompt()"
     },
     {
       "label": "executeTool()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L229",
+      "source_location": "L235",
       "id": "lib_agent_executetool",
-      "community": 1,
+      "community": 2,
       "norm_label": "executetool()"
     },
     {
       "label": "runAgentTurn()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L322",
+      "source_location": "L330",
       "id": "lib_agent_runagentturn",
-      "community": 1,
+      "community": 2,
       "norm_label": "runagentturn()"
     },
     {
       "label": "runTeacherTurn()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L387",
+      "source_location": "L395",
       "id": "lib_agent_runteacherturn",
-      "community": 1,
+      "community": 2,
       "norm_label": "runteacherturn()"
+    },
+    {
+      "label": "DeepenResult",
+      "file_type": "code",
+      "source_file": "lib/agent.ts",
+      "source_location": "L447",
+      "id": "lib_agent_deepenresult",
+      "community": 2,
+      "norm_label": "deepenresult"
     },
     {
       "label": "deepenClass()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L439",
+      "source_location": "L451",
       "id": "lib_agent_deepenclass",
-      "community": 4,
+      "community": 2,
       "norm_label": "deepenclass()"
     },
     {
@@ -1027,7 +1171,7 @@
       "source_file": "lib/seed.ts",
       "source_location": "L1",
       "id": "lib_seed_ts",
-      "community": 10,
+      "community": 1,
       "norm_label": "seed.ts"
     },
     {
@@ -1036,7 +1180,7 @@
       "source_file": "lib/seed.ts",
       "source_location": "L4",
       "id": "lib_seed_seedlecture",
-      "community": 10,
+      "community": 1,
       "norm_label": "seedlecture"
     },
     {
@@ -1045,7 +1189,7 @@
       "source_file": "lib/seed.ts",
       "source_location": "L11",
       "id": "lib_seed_insertlectures",
-      "community": 10,
+      "community": 1,
       "norm_label": "insertlectures()"
     },
     {
@@ -1054,7 +1198,7 @@
       "source_file": "lib/seed.ts",
       "source_location": "L42",
       "id": "lib_seed_seed",
-      "community": 10,
+      "community": 1,
       "norm_label": "seed()"
     },
     {
@@ -1063,7 +1207,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L1",
       "id": "lib_types_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "types.ts"
     },
     {
@@ -1072,7 +1216,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L4",
       "id": "lib_types_lectureformat",
-      "community": 2,
+      "community": 1,
       "norm_label": "lectureformat"
     },
     {
@@ -1081,7 +1225,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L6",
       "id": "lib_types_difficulty",
-      "community": 2,
+      "community": 1,
       "norm_label": "difficulty"
     },
     {
@@ -1090,7 +1234,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L8",
       "id": "lib_types_school",
-      "community": 2,
+      "community": 1,
       "norm_label": "school"
     },
     {
@@ -1099,70 +1243,70 @@
       "source_file": "lib/types.ts",
       "source_location": "L17",
       "id": "lib_types_classrow",
-      "community": 2,
+      "community": 1,
       "norm_label": "classrow"
     },
     {
       "label": "Card",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "id": "lib_types_card",
-      "community": 2,
+      "community": 1,
       "norm_label": "card"
     },
     {
       "label": "LectureContent",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "id": "lib_types_lecturecontent",
-      "community": 2,
+      "community": 1,
       "norm_label": "lecturecontent"
     },
     {
       "label": "Lecture",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L45",
+      "source_location": "L46",
       "id": "lib_types_lecture",
-      "community": 2,
+      "community": 1,
       "norm_label": "lecture"
     },
     {
       "label": "Question",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L57",
+      "source_location": "L58",
       "id": "lib_types_question",
-      "community": 2,
+      "community": 1,
       "norm_label": "question"
     },
     {
       "label": "TestAttempt",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L66",
+      "source_location": "L67",
       "id": "lib_types_testattempt",
-      "community": 2,
+      "community": 1,
       "norm_label": "testattempt"
     },
     {
       "label": "NewCard",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L75",
+      "source_location": "L76",
       "id": "lib_types_newcard",
-      "community": 2,
+      "community": 1,
       "norm_label": "newcard"
     },
     {
       "label": "NewQuestion",
       "file_type": "code",
       "source_file": "lib/types.ts",
-      "source_location": "L82",
+      "source_location": "L83",
       "id": "lib_types_newquestion",
-      "community": 2,
+      "community": 1,
       "norm_label": "newquestion"
     },
     {
@@ -1189,7 +1333,7 @@
       "source_file": "lib/db.ts",
       "source_location": "L1",
       "id": "lib_db_ts",
-      "community": 10,
+      "community": 1,
       "norm_label": "db.ts"
     },
     {
@@ -1198,7 +1342,7 @@
       "source_file": "lib/db.ts",
       "source_location": "L8",
       "id": "lib_db_globalfordb",
-      "community": 10,
+      "community": 1,
       "norm_label": "globalfordb"
     },
     {
@@ -1207,16 +1351,16 @@
       "source_file": "lib/db.ts",
       "source_location": "L10",
       "id": "lib_db_init",
-      "community": 10,
+      "community": 1,
       "norm_label": "init()"
     },
     {
       "label": "getDb()",
       "file_type": "code",
       "source_file": "lib/db.ts",
-      "source_location": "L81",
+      "source_location": "L91",
       "id": "lib_db_getdb",
-      "community": 1,
+      "community": 2,
       "norm_label": "getdb()"
     },
     {
@@ -1225,7 +1369,7 @@
       "source_file": "README.md",
       "source_location": "L1",
       "id": "readme_md",
-      "community": 7,
+      "community": 8,
       "norm_label": "readme.md"
     },
     {
@@ -1234,7 +1378,7 @@
       "source_file": "README.md",
       "source_location": "L1",
       "id": "online_university_readme_online_university",
-      "community": 7,
+      "community": 8,
       "norm_label": "\ud83c\udf93 online university"
     },
     {
@@ -1243,7 +1387,7 @@
       "source_file": "README.md",
       "source_location": "L5",
       "id": "online_university_readme_quick_start",
-      "community": 7,
+      "community": 8,
       "norm_label": "quick start"
     },
     {
@@ -1252,7 +1396,7 @@
       "source_file": "README.md",
       "source_location": "L7",
       "id": "online_university_readme_codeblock_1",
-      "community": 7,
+      "community": 8,
       "norm_label": "code:bash (npm install)"
     },
     {
@@ -1261,7 +1405,7 @@
       "source_file": "README.md",
       "source_location": "L15",
       "id": "online_university_readme_what_s_inside",
-      "community": 7,
+      "community": 8,
       "norm_label": "what's inside"
     },
     {
@@ -1270,7 +1414,7 @@
       "source_file": "README.md",
       "source_location": "L25",
       "id": "online_university_readme_the_course_builder_agent",
-      "community": 7,
+      "community": 8,
       "norm_label": "the course builder agent"
     },
     {
@@ -1279,7 +1423,7 @@
       "source_file": "README.md",
       "source_location": "L36",
       "id": "online_university_readme_cost_design",
-      "community": 7,
+      "community": 8,
       "norm_label": "cost design"
     },
     {
@@ -1288,7 +1432,7 @@
       "source_file": "README.md",
       "source_location": "L46",
       "id": "online_university_readme_lecture_formats",
-      "community": 7,
+      "community": 8,
       "norm_label": "lecture formats"
     },
     {
@@ -1297,7 +1441,7 @@
       "source_file": "README.md",
       "source_location": "L50",
       "id": "online_university_readme_notes",
-      "community": 7,
+      "community": 8,
       "norm_label": "notes"
     },
     {
@@ -1306,7 +1450,7 @@
       "source_file": "AGENTS.md",
       "source_location": "L1",
       "id": "agents_md",
-      "community": 13,
+      "community": 16,
       "norm_label": "agents.md"
     },
     {
@@ -1315,8 +1459,107 @@
       "source_file": "AGENTS.md",
       "source_location": "L2",
       "id": "online_university_agents_this_is_not_the_next_js_you_know",
-      "community": 13,
+      "community": 16,
       "norm_label": "this is not the next.js you know"
+    },
+    {
+      "label": "HANDOFF.md",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L1",
+      "id": "handoff_md",
+      "community": 7,
+      "norm_label": "handoff.md"
+    },
+    {
+      "label": "Session Handoff \u2014 Online University",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L1",
+      "id": "online_university_handoff_session_handoff_online_university",
+      "community": 7,
+      "norm_label": "session handoff \u2014 online university"
+    },
+    {
+      "label": "What this project is",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L5",
+      "id": "online_university_handoff_what_this_project_is",
+      "community": 7,
+      "norm_label": "what this project is"
+    },
+    {
+      "label": "Hard rules (do not violate)",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L10",
+      "id": "online_university_handoff_hard_rules_do_not_violate",
+      "community": 7,
+      "norm_label": "hard rules (do not violate)"
+    },
+    {
+      "label": "Architecture map",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L18",
+      "id": "online_university_handoff_architecture_map",
+      "community": 7,
+      "norm_label": "architecture map"
+    },
+    {
+      "label": "What shipped this session",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L31",
+      "id": "online_university_handoff_what_shipped_this_session",
+      "community": 7,
+      "norm_label": "what shipped this session"
+    },
+    {
+      "label": "Settled decisions (don't relitigate)",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L44",
+      "id": "online_university_handoff_settled_decisions_don_t_relitigate",
+      "community": 7,
+      "norm_label": "settled decisions (don't relitigate)"
+    },
+    {
+      "label": "Known limitations / open items",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L51",
+      "id": "online_university_handoff_known_limitations_open_items",
+      "community": 7,
+      "norm_label": "known limitations / open items"
+    },
+    {
+      "label": "Current data quirks (data/university.db)",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L59",
+      "id": "online_university_handoff_current_data_quirks_data_university_db",
+      "community": 7,
+      "norm_label": "current data quirks (data/university.db)"
+    },
+    {
+      "label": "Quick commands",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L63",
+      "id": "online_university_handoff_quick_commands",
+      "community": 7,
+      "norm_label": "quick commands"
+    },
+    {
+      "label": "code:block1 (npx tsc --noEmit                 # typecheck)",
+      "file_type": "document",
+      "source_file": "HANDOFF.md",
+      "source_location": "L64",
+      "id": "online_university_handoff_codeblock_1",
+      "community": 7,
+      "norm_label": "code:block1 (npx tsc --noemit                 # typecheck)"
     },
     {
       "label": "CLAUDE.md",
@@ -1324,7 +1567,7 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "id": "claude_md",
-      "community": 8,
+      "community": 9,
       "norm_label": "claude.md"
     },
     {
@@ -1333,61 +1576,61 @@
       "source_file": "CLAUDE.md",
       "source_location": "L2",
       "id": "online_university_claude_claude_md",
-      "community": 8,
+      "community": 9,
       "norm_label": "claude.md"
     },
     {
       "label": "1. Think Before Coding",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L8",
+      "source_location": "L10",
       "id": "online_university_claude_1_think_before_coding",
-      "community": 8,
+      "community": 9,
       "norm_label": "1. think before coding"
     },
     {
       "label": "2. Simplicity First",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L18",
+      "source_location": "L20",
       "id": "online_university_claude_2_simplicity_first",
-      "community": 8,
+      "community": 9,
       "norm_label": "2. simplicity first"
     },
     {
       "label": "3. Surgical Changes",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L30",
+      "source_location": "L32",
       "id": "online_university_claude_3_surgical_changes",
-      "community": 8,
+      "community": 9,
       "norm_label": "3. surgical changes"
     },
     {
       "label": "4. Goal-Driven Execution",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L46",
+      "source_location": "L48",
       "id": "online_university_claude_4_goal_driven_execution",
-      "community": 8,
+      "community": 9,
       "norm_label": "4. goal-driven execution"
     },
     {
       "label": "code:block1 (1. [Step] \u2192 verify: [check])",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L56",
+      "source_location": "L58",
       "id": "online_university_claude_codeblock_1",
-      "community": 8,
+      "community": 9,
       "norm_label": "code:block1 (1. [step] \u2192 verify: [check])"
     },
     {
       "label": "graphify",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L68",
+      "source_location": "L70",
       "id": "online_university_claude_graphify",
-      "community": 8,
+      "community": 9,
       "norm_label": "graphify"
     },
     {
@@ -1395,7 +1638,7 @@
       "file_type": "code",
       "source_file": "postcss.config.mjs",
       "source_location": "L1",
-      "community": 14,
+      "community": 17,
       "norm_label": "postcss.config.mjs",
       "id": "postcss_config_mjs"
     },
@@ -1404,7 +1647,7 @@
       "file_type": "code",
       "source_file": "postcss.config.mjs",
       "source_location": "L1",
-      "community": 14,
+      "community": 17,
       "norm_label": "config",
       "id": "online_university_postcss_config_config"
     },
@@ -1417,7 +1660,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "rootlayout",
       "id": "layout_rootlayout"
     },
@@ -1430,7 +1673,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "home",
       "id": "page_home"
     },
@@ -1443,7 +1686,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "lecturepage",
       "id": "lecture_lecturepage"
     },
@@ -1456,7 +1699,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "classpage",
       "id": "class_classpage"
     },
@@ -1469,7 +1712,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "testpage",
       "id": "test_testpage"
     },
@@ -1482,7 +1725,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "schoolpage",
       "id": "school_schoolpage"
     },
@@ -1495,7 +1738,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "post /api/agent",
       "id": "route_agent"
     },
@@ -1508,7 +1751,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "post /api/tests",
       "id": "route_tests"
     },
@@ -1521,7 +1764,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "post /api/lectures/complete",
       "id": "route_lectures_complete"
     },
@@ -1534,7 +1777,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "agentchat",
       "id": "agentchat_agentchat"
     },
@@ -1547,7 +1790,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "cardviewer",
       "id": "cardviewer_cardviewer"
     },
@@ -1560,7 +1803,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "testrunner",
       "id": "testrunner_testrunner"
     },
@@ -2002,7 +2245,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 16,
+      "community": 19,
       "norm_label": "lectureformat",
       "id": "types_lectureformat"
     },
@@ -2085,7 +2328,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Authentication is out of scope; platform is single-user only",
-      "community": 17,
+      "community": 20,
       "norm_label": "single-user by design",
       "id": "design_single_user"
     }
@@ -2110,6 +2353,46 @@
       "confidence_score": 1.0,
       "source": "next_config_ts",
       "target": "online_university_next_config_nextconfig"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/apple-icon.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "app_apple_icon_tsx",
+      "target": "app_apple_icon_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/apple-icon.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "app_apple_icon_tsx",
+      "target": "app_apple_icon_appleicon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/icon.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "app_icon_tsx",
+      "target": "app_icon_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/icon.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "app_icon_tsx",
+      "target": "app_icon_icon",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2178,11 +2461,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/layout.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "app_layout_tsx",
+      "target": "app_layout_viewport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/layout.tsx",
       "source_location": "L22",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "app_layout_tsx",
       "target": "app_layout_rootlayout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/manifest.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "app_manifest_ts",
+      "target": "app_manifest_manifest",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2276,11 +2579,11 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/lecture/[id]/page.tsx",
-      "source_location": "L4",
+      "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "app_lecture_id_page_tsx",
-      "target": "components_cardviewer_tsx"
+      "target": "components_lecturecards_tsx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2302,6 +2605,17 @@
       "confidence_score": 1.0,
       "source": "app_lecture_id_page_tsx",
       "target": "id_page_lecturepage"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/lecture/[id]/page.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_lecture_id_page_tsx",
+      "target": "components_cardviewer_tsx"
     },
     {
       "relation": "calls",
@@ -2857,6 +3171,123 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "components_cardviewer_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "components_reelviewer_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "lib_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "lib_types_lecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "components_lecturecards_lecturecardsprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/LectureCards.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "components_lecturecards_tsx",
+      "target": "components_lecturecards_lecturecards",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "components_reelviewer_tsx",
+      "target": "components_deepenbutton_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "components_reelviewer_tsx",
+      "target": "lib_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "components_reelviewer_tsx",
+      "target": "lib_types_lecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "components_reelviewer_tsx",
+      "target": "components_reelviewer_reelviewerprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReelViewer.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "components_reelviewer_tsx",
+      "target": "components_reelviewer_reelviewer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "components/TestRunner.tsx",
       "source_location": "L5",
       "weight": 1.0,
@@ -3288,9 +3719,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_types_difficulty",
-      "confidence_score": 1.0
+      "target": "lib_types_difficulty"
     },
     {
       "relation": "contains",
@@ -3298,9 +3729,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_data_difficulty_rank",
-      "confidence_score": 1.0
+      "target": "lib_data_difficulty_rank"
     },
     {
       "relation": "contains",
@@ -3308,9 +3739,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_data_byladder",
-      "confidence_score": 1.0
+      "target": "lib_data_byladder"
     },
     {
       "relation": "contains",
@@ -3737,9 +4168,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L342",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_getcatalogsummary",
-      "target": "lib_data_listlectures",
-      "confidence_score": 1.0
+      "target": "lib_data_listlectures"
     },
     {
       "relation": "imports",
@@ -4250,6 +4681,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/agent.ts",
+      "source_location": "L447",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_agent_ts",
+      "target": "lib_agent_deepenresult"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/agent.ts",
       "source_location": "L415",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4635,6 +5076,106 @@
       "confidence_score": 1.0,
       "source": "agents_md",
       "target": "online_university_agents_this_is_not_the_next_js_you_know"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "handoff_md",
+      "target": "online_university_handoff_session_handoff_online_university"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_what_this_project_is"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_hard_rules_do_not_violate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_architecture_map"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_what_shipped_this_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_settled_decisions_don_t_relitigate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_known_limitations_open_items"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_current_data_quirks_data_university_db"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_session_handoff_online_university",
+      "target": "online_university_handoff_quick_commands"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "HANDOFF.md",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "online_university_handoff_quick_commands",
+      "target": "online_university_handoff_codeblock_1"
     },
     {
       "relation": "contains",
@@ -5477,5 +6018,5 @@
       "source_file": "lib/db.ts"
     }
   ],
-  "built_at_commit": "eda19e1d1f44b783e48edd067b4cae1d8f889b88"
+  "built_at_commit": "fdbfebaf5b9124710a3fa9c46e333a67e3e5cbab"
 }

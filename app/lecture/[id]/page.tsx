@@ -6,7 +6,7 @@ import MuiLink from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import { getLecture, getClass, listLectures } from "@/lib/data";
-import CardViewer from "@/components/CardViewer";
+import LectureCards from "@/components/LectureCards";
 import TeacherChat from "@/components/TeacherChat";
 
 export const dynamic = "force-dynamic";
@@ -94,7 +94,7 @@ export default async function LecturePage({
           </Box>
         </Paper>
       ) : (
-        <CardViewer
+        <LectureCards
           lecture={lecture}
           classId={lecture.class_id}
           nextLectureId={nextLecture?.id}
