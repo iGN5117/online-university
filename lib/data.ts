@@ -162,6 +162,45 @@ export function removeAllowedEmail(email: string): void {
     .run(email.trim().toLowerCase());
 }
 
+// ---------- Agent model ----------
+
+// Curated list the owner can switch between from /admin. Keep cheapest first —
+// Haiku is the cost-minimizing default the project is designed around.
+export const AGENT_MODELS = [
+  { id: "claude-haiku-4-5", label: "Haiku 4.5 — cheapest, default ($1/$5 per Mtok)" },
+  { id: "claude-sonnet-4-6", label: "Sonnet 4.6 — balanced ($3/$15)" },
+  { id: "claude-opus-4-5", label: "Opus 4.5 — older Opus ($5/$25)" },
+  { id: "claude-opus-4-6", label: "Opus 4.6 — older Opus ($5/$25)" },
+  { id: "claude-opus-4-8", label: "Opus 4.8 — most capable ($5/$25)" },
+  { id: "claude-fable-5", label: "Fable 5 — frontier ($10/$50)" },
+] as const;
+
+export const DEFAULT_AGENT_MODEL = "claude-haiku-4-5";
+
+/**
+ * The model the agents run on. A value picked in /admin (settings table) wins;
+ * otherwise the AGENT_MODEL env var, then the default. Read per request so a
+ * switch takes effect without a redeploy.
+ */
+export function getAgentModel(): string {
+  const row = getDb()
+    .prepare("SELECT value FROM settings WHERE key = 'agent_model'")
+    .get() as { value: string } | undefined;
+  return row?.value ?? process.env.AGENT_MODEL ?? DEFAULT_AGENT_MODEL;
+}
+
+export function setAgentModel(model: string): void {
+  if (!AGENT_MODELS.some((m) => m.id === model)) {
+    throw new Error(`Unknown model: ${model}`);
+  }
+  getDb()
+    .prepare(
+      "INSERT INTO settings (key, value) VALUES ('agent_model', ?) " +
+        "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+    )
+    .run(model);
+}
+
 // ---------- Schools ----------
 
 export function listSchools(userId: number): School[] {

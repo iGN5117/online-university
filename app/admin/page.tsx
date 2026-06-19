@@ -2,8 +2,14 @@ import { redirect } from "next/navigation";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { auth } from "@/auth";
-import { listAllowedEmails, isOwnerEmail } from "@/lib/data";
+import {
+  listAllowedEmails,
+  isOwnerEmail,
+  getAgentModel,
+  AGENT_MODELS,
+} from "@/lib/data";
 import AllowedEmailsManager from "./AllowedEmailsManager";
+import AgentModelManager from "./AgentModelManager";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +19,7 @@ export default async function AdminPage() {
 
   const emails = listAllowedEmails();
   const ownerEmail = session!.user!.email!;
+  const agentModel = getAgentModel();
 
   return (
     <Stack spacing={4}>
@@ -31,6 +38,21 @@ export default async function AdminPage() {
       </Stack>
 
       <AllowedEmailsManager initialEmails={emails} />
+
+      <Stack spacing={1}>
+        <Typography
+          variant="h3"
+          sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}
+        >
+          Agent model
+        </Typography>
+        <Typography color="text.secondary">
+          Which Claude model the agents run on. Overrides the{" "}
+          <code>AGENT_MODEL</code> env var.
+        </Typography>
+      </Stack>
+
+      <AgentModelManager models={AGENT_MODELS} current={agentModel} />
     </Stack>
   );
 }

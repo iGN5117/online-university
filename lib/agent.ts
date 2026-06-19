@@ -11,6 +11,7 @@ import {
   getLecture,
   getClass,
   listLectures,
+  getAgentModel,
   OwnershipError,
 } from "./data";
 import type { NewCard, NewQuestion, Difficulty } from "./types";
@@ -24,8 +25,9 @@ const DIFFICULTY_LEVELS = [
 
 // Cost ceiling is the design constraint here: cheapest current model, terse
 // system prompt, catalog injected up-front (avoids a lookup round-trip), and
-// tool results that return bare IDs instead of echoing content back.
-const MODEL = process.env.AGENT_MODEL ?? "claude-haiku-4-5";
+// tool results that return bare IDs instead of echoing content back. The model
+// is read per request via getAgentModel() so the owner can switch it from
+// /admin without a redeploy.
 const MAX_TOKENS = 4096;
 const MAX_ITERATIONS = 8;
 
@@ -357,7 +359,7 @@ export async function runAgentTurn(
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const response = await client.messages.create({
-      model: MODEL,
+      model: getAgentModel(),
       max_tokens: MAX_TOKENS,
       system: systemPrompt(userId, includeManagement),
       tools,
@@ -442,7 +444,7 @@ Rules:
 
   const client = new Anthropic();
   const response = await client.messages.create({
-    model: MODEL,
+    model: getAgentModel(),
     max_tokens: 1024,
     system,
     messages: history,
@@ -544,7 +546,7 @@ Decide between two actions:
 
   const client = new Anthropic();
   const response = await client.messages.create({
-    model: MODEL,
+    model: getAgentModel(),
     max_tokens: MAX_TOKENS,
     system,
     tools: [createTool, completeTool],

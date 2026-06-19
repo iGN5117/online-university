@@ -88,6 +88,13 @@ function init(): Database.Database {
       email TEXT PRIMARY KEY COLLATE NOCASE,
       added_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    -- Runtime key/value settings the owner can change from /admin without a
+    -- redeploy (e.g. the agent model). Env vars remain the fallback default.
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );
   `);
 
   // Migration: add classes.objective to DBs created before it existed.
