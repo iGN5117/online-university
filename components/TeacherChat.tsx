@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import SchoolIcon from "@mui/icons-material/School";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
+import { useKeyboardInset } from "@/lib/useKeyboardInset";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -39,6 +40,7 @@ export default function TeacherChat({
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const keyboardInset = useKeyboardInset();
 
   // Restore per-lecture state on mount
   useEffect(() => {
@@ -118,11 +120,17 @@ export default function TeacherChat({
       elevation={8}
       sx={{
         position: "fixed",
-        bottom: 20,
+        // Lift above the soft keyboard so the input stays visible (bug: input
+        // hidden behind keyboard). +20 keeps a gap above the keyboard top.
+        bottom: keyboardInset + 20,
         left: 20,
-        zIndex: 1300,
+        // Above the FABs (zIndex 1300) so the opaque panel covers the opposing
+        // chat's button instead of overlapping it.
+        zIndex: 1301,
         width: "min(24rem, calc(100vw - 2.5rem))",
         height: "min(34rem, 70vh)",
+        // Never exceed the space left above the keyboard.
+        maxHeight: `calc(100dvh - ${keyboardInset + 40}px)`,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
