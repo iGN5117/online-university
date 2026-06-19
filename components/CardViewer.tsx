@@ -69,6 +69,17 @@ export default function CardViewer({
     }
   };
 
+  // Pop the finished lecture off the history stack so Back from the class
+  // page goes up to the school, not back into this lecture. Falls back to a
+  // direct push when there's no in-app history (e.g. opened via deep link).
+  const handleBackToClass = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(`/class/${classId}`);
+    }
+  };
+
   const handleCardClick = () => {
     if (!revealed) {
       setRevealed(true);
@@ -126,13 +137,14 @@ export default function CardViewer({
           Lecture complete!
         </Typography>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
-          <Button component={Link} href={`/class/${classId}`} variant="contained" size="large">
+          <Button onClick={handleBackToClass} variant="contained" size="large">
             Back to class
           </Button>
           {nextLectureId ? (
             <Button
               component={Link}
               href={`/lecture/${nextLectureId}`}
+              replace
               variant="outlined"
               size="large"
             >

@@ -69,6 +69,17 @@ export default function TestRunner({ classId, questions }: TestRunnerProps) {
     }
   };
 
+  // Pop the finished test off the history stack so Back from the class page
+  // goes up to the school, not back into the test. Falls back to a direct
+  // push when there's no in-app history (e.g. opened via deep link).
+  const handleBackToClass = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(`/class/${classId}`);
+    }
+  };
+
   const handleRetake = () => {
     setCurrentIndex(0);
     setSelectedOption(null);
@@ -162,8 +173,7 @@ export default function TestRunner({ classId, questions }: TestRunnerProps) {
             Retake
           </Button>
           <Button
-            component="a"
-            href={`/class/${classId}`}
+            onClick={handleBackToClass}
             variant="contained"
             fullWidth
             size="large"

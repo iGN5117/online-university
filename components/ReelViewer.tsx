@@ -46,6 +46,17 @@ export default function ReelViewer({
   const toggleReveal = (i: number) =>
     setRevealed((prev) => ({ ...prev, [i]: !prev[i] }));
 
+  // Pop the finished lecture off the history stack so Back from the class
+  // page goes up to the school, not back into this lecture. Falls back to a
+  // direct push when there's no in-app history (e.g. opened via deep link).
+  const handleBackToClass = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(`/class/${classId}`);
+    }
+  };
+
   const handleFinish = async () => {
     try {
       const res = await fetch("/api/lectures/complete", {
@@ -88,11 +99,11 @@ export default function ReelViewer({
             Lecture complete!
           </Typography>
           <Stack spacing={2} sx={{ width: "100%", maxWidth: 280 }}>
-            <Button component={Link} href={`/class/${classId}`} variant="contained" size="large">
+            <Button onClick={handleBackToClass} variant="contained" size="large">
               Back to class
             </Button>
             {nextLectureId ? (
-              <Button component={Link} href={`/lecture/${nextLectureId}`} variant="outlined" size="large">
+              <Button component={Link} href={`/lecture/${nextLectureId}`} replace variant="outlined" size="large">
                 Next lecture →
               </Button>
             ) : (
@@ -124,8 +135,7 @@ export default function ReelViewer({
         }}
       >
         <IconButton
-          component={Link}
-          href={`/class/${classId}`}
+          onClick={handleBackToClass}
           aria-label="Back to class"
           sx={{ bgcolor: "action.hover", backdropFilter: "blur(8px)" }}
         >

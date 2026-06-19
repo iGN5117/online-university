@@ -55,7 +55,9 @@ export default function DeepenButton({
         return;
       }
       if (mode === "open") {
-        router.push(`/lecture/${result.lectureId}`);
+        // Replace (not push) so Back from the new lesson returns to the class,
+        // not the just-finished lecture's completion screen.
+        router.replace(`/lecture/${result.lectureId}`);
       } else {
         router.refresh();
       }
