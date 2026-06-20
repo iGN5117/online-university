@@ -31,6 +31,19 @@ const DIFFICULTY_LEVELS = [
 const MAX_TOKENS = 4096;
 const MAX_ITERATIONS = 8;
 
+// Web search is a server-side tool: it runs on Anthropic's side and results come
+// back inline in the same response (no client execution). The basic version is
+// used deliberately — the dynamic-filtering versions require Opus/Sonnet, but
+// the agent model is runtime-switchable (incl. Haiku) via getAgentModel(), and
+// basic search works on every model. max_uses caps the per-turn search count to
+// bound cost ($10 / 1k searches + results billed as input tokens).
+const MAX_WEB_SEARCHES = 5;
+const WEB_SEARCH_TOOL: Anthropic.Messages.ToolUnion = {
+  type: "web_search_20250305",
+  name: "web_search",
+  max_uses: MAX_WEB_SEARCHES,
+};
+
 export interface AgentAction {
   kind: "school" | "class" | "lecture" | "cards" | "moved" | "deleted";
   id: number;
@@ -229,6 +242,7 @@ Rules:
 - Always set "difficulty" (Beginner/Intermediate/Advanced/Expert). Lessons in a class are auto-ordered by difficulty, so this places the lesson correctly on the ladder — an intro lesson is Beginner, deeper ones go higher.
 - When you create a class, set "objective" to the learner's real goal and scope in their own terms — what they actually want and how far it goes. A class is BOUNDED by its objective. If they ask for a specific book, course, or finite topic, say so exactly ("the key lessons from <book>"), not the broad field it belongs to. This is what "go deeper" follows, so getting it right keeps later lessons on target instead of drifting into the wider subject.
 - Start a new class with ONE introductory lecture. When the user wants more depth, add further lectures or add_cards/add_questions to existing ones.
+- You can search the web when building content that needs current facts or specifics you're unsure of (recent events, prices, dates, fast-changing fields). Don't search for well-established fundamentals — answer from your own knowledge to keep it fast and cheap.
 - Be brief. Confirm what you created in 1-2 sentences. Never repeat card content back in chat.${management}
 
 Current catalog (id: name):
@@ -355,7 +369,9 @@ export async function runAgentTurn(
   // Only expose the management tools when the latest user turn implies it.
   const lastUser = [...history].reverse().find((m) => m.role === "user");
   const includeManagement = wantsManagement(lastUser?.content ?? "");
-  const tools = includeManagement ? [...TOOLS, ...MANAGEMENT_TOOLS] : TOOLS;
+  const tools: Anthropic.Messages.ToolUnion[] = includeManagement
+    ? [...TOOLS, ...MANAGEMENT_TOOLS, WEB_SEARCH_TOOL]
+    : [...TOOLS, WEB_SEARCH_TOOL];
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const response = await client.messages.create({
@@ -371,6 +387,13 @@ export async function runAgentTurn(
       .map((b) => b.text)
       .join("");
     if (text) reply = text;
+
+    // Web search runs server-side; if its loop hits the cap mid-turn the API
+    // returns pause_turn — echo the turn back to let it resume.
+    if (response.stop_reason === "pause_turn") {
+      messages.push({ role: "assistant", content: response.content });
+      continue;
+    }
 
     if (response.stop_reason !== "tool_use") break;
 
@@ -439,21 +462,37 @@ ${cardText}
 Rules:
 - Answer the learner's questions about this lesson clearly and patiently, in a few short sentences.
 - Ground answers in the lesson content above; you may add brief, directly-relevant context to clarify a point.
+- You can search the web for current or factual details that help answer a question about this lesson (e.g. recent figures, dates, or events). Keep it tied to the lesson — don't search to go off-topic.
 - If asked about something unrelated to this lesson, say it's outside this lesson and suggest the Course Builder, in one sentence.
 - Be encouraging and concise. Plain text, no markdown headers.`;
 
   const client = new Anthropic();
-  const response = await client.messages.create({
-    model: getAgentModel(),
-    max_tokens: 1024,
-    system,
-    messages: history,
-  });
+  const messages: Anthropic.MessageParam[] = [...history];
+  let reply = "";
 
-  const reply = response.content
-    .filter((b): b is Anthropic.TextBlock => b.type === "text")
-    .map((b) => b.text)
-    .join("");
+  // Web search is the teacher's only tool; loop solely to resume server-side
+  // search if it pauses mid-turn (pause_turn).
+  for (let i = 0; i < MAX_ITERATIONS; i++) {
+    const response = await client.messages.create({
+      model: getAgentModel(),
+      max_tokens: 1024,
+      system,
+      tools: [WEB_SEARCH_TOOL],
+      messages,
+    });
+
+    const text = response.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+    if (text) reply = text;
+
+    if (response.stop_reason === "pause_turn") {
+      messages.push({ role: "assistant", content: response.content });
+      continue;
+    }
+    break;
+  }
 
   return { reply: reply || "…" };
 }
@@ -542,26 +581,51 @@ ${covered}
 
 Decide between two actions:
 1. If there is still material WITHIN the objective that hasn't been covered, call create_deeper_lecture: produce the NEXT lecture — one logical step deeper than what's above, strictly inside the objective. Do not repeat covered material, and do NOT drift into the broader field the objective belongs to. Pick the appropriate difficulty on the ladder Beginner → Intermediate → Advanced → Expert (don't skip rungs). Cards: front = one concept in a few words; back = 2-4 plain sentences, no jargon; example = a concrete real-world example. Add a small inline SVG (currentColor) to a card only where a visual truly helps.
-2. If the existing lessons already cover the objective in full, call scope_complete instead. Do not pad the class with tangential material just to add a lecture.`;
+2. If the existing lessons already cover the objective in full, call scope_complete instead. Do not pad the class with tangential material just to add a lecture.
+
+You may search the web first when the next lesson needs current facts or specifics you're unsure of; rely on your own knowledge for well-established material.`;
 
   const client = new Anthropic();
-  const response = await client.messages.create({
-    model: getAgentModel(),
-    max_tokens: MAX_TOKENS,
-    system,
-    tools: [createTool, completeTool],
-    tool_choice: { type: "any" },
-    messages: [
-      {
-        role: "user",
-        content: "Add the next lesson for this class, or report it complete.",
-      },
-    ],
-  });
+  const messages: Anthropic.MessageParam[] = [
+    {
+      role: "user",
+      content: "Add the next lesson for this class, or report it complete.",
+    },
+  ];
 
-  const toolUse = response.content.find(
-    (b): b is Anthropic.ToolUseBlock => b.type === "tool_use",
-  );
+  // Loop so the model can optionally web-search before committing. tool_choice
+  // "any" is dropped (it would force a decision before any search could run);
+  // the nudge below keeps the model from stalling without a decision.
+  let toolUse: Anthropic.ToolUseBlock | undefined;
+  for (let i = 0; i < MAX_ITERATIONS && !toolUse; i++) {
+    const response = await client.messages.create({
+      model: getAgentModel(),
+      max_tokens: MAX_TOKENS,
+      system,
+      tools: [createTool, completeTool, WEB_SEARCH_TOOL],
+      messages,
+    });
+
+    if (response.stop_reason === "pause_turn") {
+      messages.push({ role: "assistant", content: response.content });
+      continue;
+    }
+
+    toolUse = response.content.find(
+      (b): b is Anthropic.ToolUseBlock =>
+        b.type === "tool_use" &&
+        (b.name === "create_deeper_lecture" || b.name === "scope_complete"),
+    );
+    if (toolUse) break;
+
+    // Searched or replied without deciding — record the turn and prompt a commit.
+    messages.push({ role: "assistant", content: response.content });
+    messages.push({
+      role: "user",
+      content: "Now call create_deeper_lecture or scope_complete.",
+    });
+  }
+
   if (!toolUse) throw new Error("model did not produce a result");
 
   if (toolUse.name === "scope_complete") {

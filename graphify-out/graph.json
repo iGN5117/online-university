@@ -136,7 +136,7 @@
       "source_file": "auth.config.ts",
       "source_location": "L1",
       "id": "auth_config_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "auth.config.ts"
     },
     {
@@ -154,7 +154,7 @@
       "source_file": "proxy.ts",
       "source_location": "L1",
       "id": "proxy_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "proxy.ts"
     },
     {
@@ -163,7 +163,7 @@
       "source_file": "proxy.ts",
       "source_location": "L7",
       "id": "online_university_proxy_auth",
-      "community": 2,
+      "community": 3,
       "norm_label": "{ auth }"
     },
     {
@@ -172,7 +172,7 @@
       "source_file": "proxy.ts",
       "source_location": "L11",
       "id": "online_university_proxy_url",
-      "community": 2,
+      "community": 3,
       "norm_label": "url"
     },
     {
@@ -181,7 +181,7 @@
       "source_file": "proxy.ts",
       "source_location": "L18",
       "id": "online_university_proxy_config",
-      "community": 2,
+      "community": 3,
       "norm_label": "config"
     },
     {
@@ -208,7 +208,7 @@
       "source_file": "auth.ts",
       "source_location": "L1",
       "id": "auth_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "auth.ts"
     },
     {
@@ -217,7 +217,7 @@
       "source_file": "auth.ts",
       "source_location": "L8",
       "id": "online_university_auth_session",
-      "community": 2,
+      "community": 3,
       "norm_label": "session"
     },
     {
@@ -226,7 +226,7 @@
       "source_file": "auth.ts",
       "source_location": "L14",
       "id": "online_university_auth_handlers_auth_signin_signout",
-      "community": 2,
+      "community": 3,
       "norm_label": "{ handlers, auth, signin, signout }"
     },
     {
@@ -514,7 +514,7 @@
       "source_file": "app/api/auth/[...nextauth]/route.ts",
       "source_location": "L1",
       "id": "app_api_auth_nextauth_route_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -523,7 +523,7 @@
       "source_file": "app/api/deepen/route.ts",
       "source_location": "L1",
       "id": "app_api_deepen_route_ts",
-      "community": 4,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -532,7 +532,7 @@
       "source_file": "app/api/deepen/route.ts",
       "source_location": "L8",
       "id": "deepen_route_post",
-      "community": 4,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -541,7 +541,7 @@
       "source_file": "app/api/tests/route.ts",
       "source_location": "L1",
       "id": "app_api_tests_route_ts",
-      "community": 3,
+      "community": 4,
       "norm_label": "route.ts"
     },
     {
@@ -550,7 +550,7 @@
       "source_file": "app/api/tests/route.ts",
       "source_location": "L5",
       "id": "tests_route_post",
-      "community": 3,
+      "community": 4,
       "norm_label": "post()"
     },
     {
@@ -559,7 +559,7 @@
       "source_file": "app/api/admin/allowed-emails/route.ts",
       "source_location": "L1",
       "id": "app_api_admin_allowed_emails_route_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -568,7 +568,7 @@
       "source_file": "app/api/admin/allowed-emails/route.ts",
       "source_location": "L6",
       "id": "allowed_emails_route_requireowner",
-      "community": 2,
+      "community": 3,
       "norm_label": "requireowner()"
     },
     {
@@ -577,7 +577,7 @@
       "source_file": "app/api/admin/allowed-emails/route.ts",
       "source_location": "L11",
       "id": "allowed_emails_route_post",
-      "community": 2,
+      "community": 3,
       "norm_label": "post()"
     },
     {
@@ -586,7 +586,7 @@
       "source_file": "app/api/admin/allowed-emails/route.ts",
       "source_location": "L23",
       "id": "allowed_emails_route_delete",
-      "community": 2,
+      "community": 3,
       "norm_label": "delete()"
     },
     {
@@ -595,7 +595,7 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L1",
       "id": "app_api_admin_model_route_ts",
-      "community": 2,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -604,7 +604,7 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L6",
       "id": "model_route_requireowner",
-      "community": 2,
+      "community": 3,
       "norm_label": "requireowner()"
     },
     {
@@ -613,7 +613,7 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L11",
       "id": "model_route_post",
-      "community": 2,
+      "community": 3,
       "norm_label": "post()"
     },
     {
@@ -622,7 +622,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L1",
       "id": "app_api_agent_route_ts",
-      "community": 4,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -631,7 +631,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L8",
       "id": "agent_route_chatturn",
-      "community": 4,
+      "community": 2,
       "norm_label": "chatturn"
     },
     {
@@ -640,7 +640,7 @@
       "source_file": "app/api/agent/route.ts",
       "source_location": "L13",
       "id": "agent_route_post",
-      "community": 4,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -649,7 +649,7 @@
       "source_file": "app/api/lectures/complete/route.ts",
       "source_location": "L1",
       "id": "app_api_lectures_complete_route_ts",
-      "community": 3,
+      "community": 4,
       "norm_label": "route.ts"
     },
     {
@@ -658,7 +658,7 @@
       "source_file": "app/api/lectures/complete/route.ts",
       "source_location": "L5",
       "id": "complete_route_post",
-      "community": 3,
+      "community": 4,
       "norm_label": "post()"
     },
     {
@@ -667,7 +667,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L1",
       "id": "app_api_teacher_route_ts",
-      "community": 4,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -676,7 +676,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L8",
       "id": "teacher_route_chatturn",
-      "community": 4,
+      "community": 2,
       "norm_label": "chatturn"
     },
     {
@@ -685,7 +685,7 @@
       "source_file": "app/api/teacher/route.ts",
       "source_location": "L13",
       "id": "teacher_route_post",
-      "community": 4,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -712,7 +712,7 @@
       "source_file": "app/login/page.tsx",
       "source_location": "L1",
       "id": "app_login_page_tsx",
-      "community": 2,
+      "community": 3,
       "norm_label": "page.tsx"
     },
     {
@@ -721,7 +721,7 @@
       "source_file": "app/login/page.tsx",
       "source_location": "L9",
       "id": "login_page_loginpage",
-      "community": 2,
+      "community": 3,
       "norm_label": "loginpage()"
     },
     {
@@ -1081,7 +1081,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L1",
       "id": "lib_data_ts",
-      "community": 3,
+      "community": 4,
       "norm_label": "data.ts"
     },
     {
@@ -1090,7 +1090,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L17",
       "id": "lib_data_difficulty_rank",
-      "community": 3,
+      "community": 4,
       "norm_label": "difficulty_rank"
     },
     {
@@ -1099,7 +1099,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L24",
       "id": "lib_data_byladder",
-      "community": 3,
+      "community": 4,
       "norm_label": "byladder()"
     },
     {
@@ -1108,7 +1108,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L30",
       "id": "lib_data_slugify",
-      "community": 3,
+      "community": 4,
       "norm_label": "slugify()"
     },
     {
@@ -1117,7 +1117,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L41",
       "id": "lib_data_ownershiperror",
-      "community": 4,
+      "community": 2,
       "norm_label": "ownershiperror"
     },
     {
@@ -1126,7 +1126,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L42",
       "id": "lib_data_ownershiperror_constructor",
-      "community": 4,
+      "community": 2,
       "norm_label": ".constructor()"
     },
     {
@@ -1135,7 +1135,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L53",
       "id": "lib_data_ownsschool",
-      "community": 3,
+      "community": 4,
       "norm_label": "ownsschool()"
     },
     {
@@ -1144,7 +1144,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L59",
       "id": "lib_data_ownsclass",
-      "community": 3,
+      "community": 4,
       "norm_label": "ownsclass()"
     },
     {
@@ -1153,7 +1153,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L68",
       "id": "lib_data_ownslecture",
-      "community": 3,
+      "community": 4,
       "norm_label": "ownslecture()"
     },
     {
@@ -1162,7 +1162,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L87",
       "id": "lib_data_getorcreateuser",
-      "community": 2,
+      "community": 3,
       "norm_label": "getorcreateuser()"
     },
     {
@@ -1171,7 +1171,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L121",
       "id": "lib_data_isowneremail",
-      "community": 2,
+      "community": 3,
       "norm_label": "isowneremail()"
     },
     {
@@ -1180,7 +1180,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L131",
       "id": "lib_data_isemailallowed",
-      "community": 2,
+      "community": 3,
       "norm_label": "isemailallowed()"
     },
     {
@@ -1198,7 +1198,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L153",
       "id": "lib_data_addallowedemail",
-      "community": 2,
+      "community": 3,
       "norm_label": "addallowedemail()"
     },
     {
@@ -1207,7 +1207,7 @@
       "source_file": "lib/data.ts",
       "source_location": "L159",
       "id": "lib_data_removeallowedemail",
-      "community": 2,
+      "community": 3,
       "norm_label": "removeallowedemail()"
     },
     {
@@ -1223,7 +1223,7 @@
       "label": "getAgentModel()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L183",
+      "source_location": "L185",
       "id": "lib_data_getagentmodel",
       "community": 2,
       "norm_label": "getagentmodel()"
@@ -1232,16 +1232,16 @@
       "label": "setAgentModel()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L190",
+      "source_location": "L192",
       "id": "lib_data_setagentmodel",
-      "community": 2,
+      "community": 3,
       "norm_label": "setagentmodel()"
     },
     {
       "label": "listSchools()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L204",
+      "source_location": "L206",
       "id": "lib_data_listschools",
       "community": 5,
       "norm_label": "listschools()"
@@ -1250,7 +1250,7 @@
       "label": "getSchool()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L213",
+      "source_location": "L215",
       "id": "lib_data_getschool",
       "community": 5,
       "norm_label": "getschool()"
@@ -1259,16 +1259,16 @@
       "label": "createSchool()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L222",
+      "source_location": "L224",
       "id": "lib_data_createschool",
-      "community": 3,
+      "community": 4,
       "norm_label": "createschool()"
     },
     {
       "label": "listClasses()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L249",
+      "source_location": "L251",
       "id": "lib_data_listclasses",
       "community": 5,
       "norm_label": "listclasses()"
@@ -1277,7 +1277,7 @@
       "label": "getClass()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L255",
+      "source_location": "L257",
       "id": "lib_data_getclass",
       "community": 5,
       "norm_label": "getclass()"
@@ -1286,34 +1286,34 @@
       "label": "createClass()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L261",
+      "source_location": "L263",
       "id": "lib_data_createclass",
-      "community": 3,
+      "community": 4,
       "norm_label": "createclass()"
     },
     {
       "label": "LectureDbRow",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L287",
+      "source_location": "L289",
       "id": "lib_data_lecturedbrow",
-      "community": 3,
+      "community": 4,
       "norm_label": "lecturedbrow"
     },
     {
       "label": "parseLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L307",
+      "source_location": "L309",
       "id": "lib_data_parselecture",
-      "community": 3,
+      "community": 5,
       "norm_label": "parselecture()"
     },
     {
       "label": "listLectures()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L315",
+      "source_location": "L317",
       "id": "lib_data_listlectures",
       "community": 5,
       "norm_label": "listlectures()"
@@ -1322,88 +1322,88 @@
       "label": "getLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L322",
+      "source_location": "L324",
       "id": "lib_data_getlecture",
-      "community": 3,
+      "community": 5,
       "norm_label": "getlecture()"
     },
     {
       "label": "createLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L329",
+      "source_location": "L331",
       "id": "lib_data_createlecture",
-      "community": 3,
+      "community": 4,
       "norm_label": "createlecture()"
     },
     {
       "label": "addCards()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L354",
+      "source_location": "L356",
       "id": "lib_data_addcards",
-      "community": 3,
+      "community": 4,
       "norm_label": "addcards()"
     },
     {
       "label": "insertQuestions()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L380",
+      "source_location": "L382",
       "id": "lib_data_insertquestions",
-      "community": 3,
+      "community": 4,
       "norm_label": "insertquestions()"
     },
     {
       "label": "addQuestions()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L395",
+      "source_location": "L397",
       "id": "lib_data_addquestions",
-      "community": 3,
+      "community": 4,
       "norm_label": "addquestions()"
     },
     {
       "label": "moveLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L405",
+      "source_location": "L407",
       "id": "lib_data_movelecture",
-      "community": 3,
+      "community": 4,
       "norm_label": "movelecture()"
     },
     {
       "label": "deleteLecture()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L450",
+      "source_location": "L452",
       "id": "lib_data_deletelecture",
-      "community": 3,
+      "community": 4,
       "norm_label": "deletelecture()"
     },
     {
       "label": "markLectureComplete()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L461",
+      "source_location": "L463",
       "id": "lib_data_marklecturecomplete",
-      "community": 3,
+      "community": 4,
       "norm_label": "marklecturecomplete()"
     },
     {
       "label": "QuestionDbRow",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L471",
+      "source_location": "L473",
       "id": "lib_data_questiondbrow",
-      "community": 3,
+      "community": 4,
       "norm_label": "questiondbrow"
     },
     {
       "label": "getTestQuestions()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L485",
+      "source_location": "L487",
       "id": "lib_data_gettestquestions",
       "community": 5,
       "norm_label": "gettestquestions()"
@@ -1412,16 +1412,16 @@
       "label": "recordTestAttempt()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L503",
+      "source_location": "L505",
       "id": "lib_data_recordtestattempt",
-      "community": 3,
+      "community": 4,
       "norm_label": "recordtestattempt()"
     },
     {
       "label": "listTestAttempts()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L519",
+      "source_location": "L521",
       "id": "lib_data_listtestattempts",
       "community": 5,
       "norm_label": "listtestattempts()"
@@ -1430,9 +1430,9 @@
       "label": "getCatalogSummary()",
       "file_type": "code",
       "source_file": "lib/data.ts",
-      "source_location": "L539",
+      "source_location": "L541",
       "id": "lib_data_getcatalogsummary",
-      "community": 4,
+      "community": 2,
       "norm_label": "getcatalogsummary()"
     },
     {
@@ -1441,7 +1441,7 @@
       "source_file": "lib/agent.ts",
       "source_location": "L1",
       "id": "lib_agent_ts",
-      "community": 4,
+      "community": 2,
       "norm_label": "agent.ts"
     },
     {
@@ -1450,124 +1450,133 @@
       "source_file": "lib/agent.ts",
       "source_location": "L19",
       "id": "lib_agent_difficulty_levels",
-      "community": 4,
+      "community": 2,
       "norm_label": "difficulty_levels"
+    },
+    {
+      "label": "WEB_SEARCH_TOOL",
+      "file_type": "code",
+      "source_file": "lib/agent.ts",
+      "source_location": "L41",
+      "id": "lib_agent_web_search_tool",
+      "community": 2,
+      "norm_label": "web_search_tool"
     },
     {
       "label": "AgentAction",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L34",
+      "source_location": "L47",
       "id": "lib_agent_agentaction",
-      "community": 4,
+      "community": 2,
       "norm_label": "agentaction"
     },
     {
       "label": "AgentTurnResult",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L40",
+      "source_location": "L53",
       "id": "lib_agent_agentturnresult",
-      "community": 4,
+      "community": 2,
       "norm_label": "agentturnresult"
     },
     {
       "label": "CARD_SCHEMA",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L45",
+      "source_location": "L58",
       "id": "lib_agent_card_schema",
-      "community": 4,
+      "community": 2,
       "norm_label": "card_schema"
     },
     {
       "label": "QUESTION_SCHEMA",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L60",
+      "source_location": "L73",
       "id": "lib_agent_question_schema",
-      "community": 4,
+      "community": 2,
       "norm_label": "question_schema"
     },
     {
       "label": "TOOLS",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L71",
+      "source_location": "L84",
       "id": "lib_agent_tools",
-      "community": 4,
+      "community": 2,
       "norm_label": "tools"
     },
     {
       "label": "MANAGEMENT_TOOLS",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L164",
+      "source_location": "L177",
       "id": "lib_agent_management_tools",
-      "community": 4,
+      "community": 2,
       "norm_label": "management_tools"
     },
     {
       "label": "wantsManagement()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L206",
+      "source_location": "L219",
       "id": "lib_agent_wantsmanagement",
-      "community": 4,
+      "community": 2,
       "norm_label": "wantsmanagement()"
     },
     {
       "label": "systemPrompt()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L212",
+      "source_location": "L225",
       "id": "lib_agent_systemprompt",
-      "community": 4,
+      "community": 2,
       "norm_label": "systemprompt()"
     },
     {
       "label": "executeTool()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L238",
+      "source_location": "L252",
       "id": "lib_agent_executetool",
-      "community": 3,
+      "community": 4,
       "norm_label": "executetool()"
     },
     {
       "label": "runAgentTurn()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L346",
+      "source_location": "L360",
       "id": "lib_agent_runagentturn",
-      "community": 4,
+      "community": 2,
       "norm_label": "runagentturn()"
     },
     {
       "label": "runTeacherTurn()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L413",
+      "source_location": "L436",
       "id": "lib_agent_runteacherturn",
-      "community": 4,
+      "community": 2,
       "norm_label": "runteacherturn()"
     },
     {
       "label": "DeepenResult",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L466",
+      "source_location": "L505",
       "id": "lib_agent_deepenresult",
-      "community": 4,
+      "community": 2,
       "norm_label": "deepenresult"
     },
     {
       "label": "deepenClass()",
       "file_type": "code",
       "source_file": "lib/agent.ts",
-      "source_location": "L470",
+      "source_location": "L509",
       "id": "lib_agent_deepenclass",
-      "community": 4,
+      "community": 2,
       "norm_label": "deepenclass()"
     },
     {
@@ -1783,7 +1792,7 @@
       "source_file": "lib/db.ts",
       "source_location": "L123",
       "id": "lib_db_getdb",
-      "community": 3,
+      "community": 4,
       "norm_label": "getdb()"
     },
     {
@@ -2196,7 +2205,7 @@
       "file_type": "code",
       "source_file": "auth.ts",
       "source_location": "L14",
-      "community": 2,
+      "community": 3,
       "norm_label": "isallowed()",
       "id": "online_university_auth_isallowed"
     },
@@ -3130,9 +3139,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "auth_ts",
-      "confidence_score": 1.0
+      "target": "auth_ts"
     },
     {
       "relation": "imports_from",
@@ -3598,9 +3607,9 @@
       "source_file": "app/admin/AgentModelManager.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_admin_agentmodelmanager_tsx",
-      "target": "admin_agentmodelmanager_modeloption",
-      "confidence_score": 1.0
+      "target": "admin_agentmodelmanager_modeloption"
     },
     {
       "relation": "contains",
@@ -3608,9 +3617,9 @@
       "source_file": "app/admin/AgentModelManager.tsx",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_admin_agentmodelmanager_tsx",
-      "target": "admin_agentmodelmanager_agentmodelmanager",
-      "confidence_score": 1.0
+      "target": "admin_agentmodelmanager_agentmodelmanager"
     },
     {
       "relation": "imports_from",
@@ -3619,9 +3628,9 @@
       "source_file": "app/admin/page.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_admin_page_tsx",
-      "target": "app_admin_agentmodelmanager_tsx",
-      "confidence_score": 1.0
+      "target": "app_admin_agentmodelmanager_tsx"
     },
     {
       "relation": "imports_from",
@@ -3663,9 +3672,9 @@
       "source_file": "app/admin/page.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_admin_page_tsx",
-      "target": "lib_data_getagentmodel",
-      "confidence_score": 1.0
+      "target": "lib_data_getagentmodel"
     },
     {
       "relation": "imports",
@@ -3674,9 +3683,9 @@
       "source_file": "app/admin/page.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_admin_page_tsx",
-      "target": "lib_data_agent_models",
-      "confidence_score": 1.0
+      "target": "lib_data_agent_models"
     },
     {
       "relation": "contains",
@@ -4238,9 +4247,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "lib_data_ts",
-      "confidence_score": 1.0
+      "target": "lib_data_ts"
     },
     {
       "relation": "imports",
@@ -4249,9 +4258,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "lib_data_setagentmodel",
-      "confidence_score": 1.0
+      "target": "lib_data_setagentmodel"
     },
     {
       "relation": "imports",
@@ -4260,9 +4269,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "lib_data_isowneremail",
-      "confidence_score": 1.0
+      "target": "lib_data_isowneremail"
     },
     {
       "relation": "contains",
@@ -4270,9 +4279,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "model_route_requireowner",
-      "confidence_score": 1.0
+      "target": "model_route_requireowner"
     },
     {
       "relation": "contains",
@@ -4280,9 +4289,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_admin_model_route_ts",
-      "target": "model_route_post",
-      "confidence_score": 1.0
+      "target": "model_route_post"
     },
     {
       "relation": "calls",
@@ -4291,9 +4300,9 @@
       "source_file": "app/api/admin/model/route.ts",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "model_route_post",
-      "target": "model_route_requireowner",
-      "confidence_score": 1.0
+      "target": "model_route_requireowner"
     },
     {
       "relation": "calls",
@@ -5418,9 +5427,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_data_agent_models",
-      "confidence_score": 1.0
+      "target": "lib_data_agent_models"
     },
     {
       "relation": "contains",
@@ -5428,9 +5437,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L183",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_data_getagentmodel",
-      "confidence_score": 1.0
+      "target": "lib_data_getagentmodel"
     },
     {
       "relation": "contains",
@@ -5438,9 +5447,9 @@
       "source_file": "lib/data.ts",
       "source_location": "L190",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_data_ts",
-      "target": "lib_data_setagentmodel",
-      "confidence_score": 1.0
+      "target": "lib_data_setagentmodel"
     },
     {
       "relation": "contains",
@@ -5921,9 +5930,9 @@
       "source_file": "lib/agent.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_agent_ts",
-      "target": "lib_data_getagentmodel",
-      "confidence_score": 1.0
+      "target": "lib_data_getagentmodel"
     },
     {
       "relation": "calls",
@@ -6583,6 +6592,16 @@
       "confidence_score": 1.0,
       "source": "lib_agent_ts",
       "target": "lib_agent_difficulty_levels"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/agent.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "lib_agent_ts",
+      "target": "lib_agent_web_search_tool",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -8165,5 +8184,5 @@
       "source_file": "lib/db.ts"
     }
   ],
-  "built_at_commit": "f1e54e5f67923515118d834a5381e15d95d1cf7c"
+  "built_at_commit": "ff730314771f276d72bec3790f02ecdd83a48783"
 }

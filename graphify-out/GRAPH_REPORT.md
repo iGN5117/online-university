@@ -1,16 +1,16 @@
-# Graph Report - Online_University  (2026-06-19)
+# Graph Report - Online_University  (2026-06-20)
 
 ## Corpus Check
-- 52 files · ~21,060 words
+- 52 files · ~21,489 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 288 nodes · 493 edges · 25 communities (16 shown, 9 thin omitted)
+- 289 nodes · 494 edges · 25 communities (16 shown, 9 thin omitted)
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f1e54e5f`
+- Built from commit: `ff730314`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,8 +59,8 @@
   README.md → lib/types.ts
 - `Bite-Size Card Learning Design` --rationale_for--> `Card`  [EXTRACTED]
   README.md → lib/types.ts
-- `LecturePage()` --calls--> `getLecture()`  [EXTRACTED]
-  app/lecture/[id]/page.tsx → lib/data.ts
+- `AdminPage()` --calls--> `isOwnerEmail()`  [EXTRACTED]
+  app/admin/page.tsx → lib/data.ts
 
 ## Hyperedges (group relationships)
 - **Client → API → Data Layer Write Pattern** — cardviewer_cardviewer, route_lectures_complete, testrunner_testrunner, route_tests [INFERRED 0.85]
@@ -82,19 +82,19 @@ Nodes (24): CardViewerProps, DeepenResult, ErrorResponse, LectureCardsProps, Ree
 
 ### Community 2 - "App Shell & Chat Panel"
 Cohesion: 0.08
-Nodes (21): ModelOption, AdminPage(), DELETE(), POST(), requireOwner(), addAllowedEmail(), AGENT_MODELS, getAgentModel() (+13 more)
+Nodes (26): ModelOption, AdminPage(), ChatTurn, POST(), POST(), AgentAction, AgentTurnResult, CARD_SCHEMA (+18 more)
 
 ### Community 3 - "Browsing Pages & Queries"
-Cohesion: 0.19
-Nodes (23): POST(), executeTool(), addCards(), addQuestions(), createClass(), createLecture(), createSchool(), deleteLecture() (+15 more)
+Cohesion: 0.12
+Nodes (16): DELETE(), POST(), requireOwner(), addAllowedEmail(), getOrCreateUser(), isEmailAllowed(), isOwnerEmail(), removeAllowedEmail() (+8 more)
 
 ### Community 4 - "API Endpoints & Page Map"
-Cohesion: 0.12
-Nodes (20): ChatTurn, POST(), POST(), AgentAction, AgentTurnResult, CARD_SCHEMA, deepenClass(), DeepenResult (+12 more)
+Cohesion: 0.2
+Nodes (21): POST(), executeTool(), addCards(), addQuestions(), createClass(), createLecture(), createSchool(), deleteLecture() (+13 more)
 
 ### Community 5 - "Class & Progress Data Access"
-Cohesion: 0.25
-Nodes (13): Home(), ClassPage(), LecturePage(), SchoolPage(), requireUser(), getClass(), getSchool(), getTestQuestions() (+5 more)
+Cohesion: 0.22
+Nodes (15): Home(), ClassPage(), LecturePage(), SchoolPage(), requireUser(), getClass(), getLecture(), getSchool() (+7 more)
 
 ### Community 6 - "Content Creation (Lectures & Cards)"
 Cohesion: 0.12
@@ -125,24 +125,24 @@ Cohesion: 0.25
 Nodes (6): 1. Think Before Coding, 2. Simplicity First, 3. Surgical Changes, 4. Goal-Driven Execution, code:block1 (1. [Step] → verify: [check]), graphify
 
 ## Knowledge Gaps
-- **94 isolated node(s):** `{ spawn }`, `env`, `{ auth }`, `url`, `config` (+89 more)
+- **95 isolated node(s):** `{ spawn }`, `env`, `{ auth }`, `url`, `config` (+90 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getDb()` connect `Browsing Pages & Queries` to `Companion Agent Core`, `App Shell & Chat Panel`, `API Endpoints & Page Map`, `Class & Progress Data Access`?**
+- **Why does `getDb()` connect `API Endpoints & Page Map` to `Companion Agent Core`, `App Shell & Chat Panel`, `Browsing Pages & Queries`, `Class & Progress Data Access`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `Lecture` connect `Companion Agent Core` to `Browsing Pages & Queries`?**
+- **Why does `Lecture` connect `Companion Agent Core` to `API Endpoints & Page Map`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `{ spawn }`, `env`, `{ auth }` to the rest of the system?**
-  _94 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _95 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Card Viewer & Data Storage` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
 - **Should `Companion Agent Core` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `App Shell & Chat Panel` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `API Endpoints & Page Map` be split into smaller, more focused modules?**
+- **Should `Browsing Pages & Queries` be split into smaller, more focused modules?**
   _Cohesion score 0.12 - nodes in this community are weakly interconnected._
