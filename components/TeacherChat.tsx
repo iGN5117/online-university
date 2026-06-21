@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
@@ -18,8 +19,15 @@ interface ChatMessage {
   content: string;
 }
 
+interface Action {
+  kind: "school" | "class" | "lecture" | "cards" | "moved" | "deleted";
+  id: number;
+  label: string;
+}
+
 interface AgentResponse {
   reply: string;
+  actions?: Action[];
 }
 
 interface ErrorResponse {
@@ -28,11 +36,14 @@ interface ErrorResponse {
 
 export default function TeacherChat({
   lectureId,
+  classId,
   lectureTitle,
 }: {
   lectureId: number;
+  classId: number;
   lectureTitle: string;
 }) {
+  const router = useRouter();
   const storageKey = `teacher-chat-${lectureId}`;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -87,6 +98,22 @@ export default function TeacherChat({
         ? (data as AgentResponse).reply
         : (data as ErrorResponse).error || "Something went wrong — try again.";
       setMessages((prev) => [...prev, { role: "assistant", content }]);
+
+      // Reflect any edits/deletes the teacher made. If it deleted the page we're
+      // on (this lesson, or its class/school), navigate somewhere still valid;
+      // otherwise just re-fetch so the open cards show the edit.
+      const actions = response.ok ? (data as AgentResponse).actions : undefined;
+      if (actions && actions.length > 0) {
+        const deleted = actions.filter((a) => a.kind === "deleted");
+        if (deleted.some((a) => a.label === `lecture ${lectureId}`)) {
+          router.push(`/class/${classId}`);
+        } else if (deleted.length > 0) {
+          // The class or school was removed — the class page is gone too.
+          router.push("/");
+        } else {
+          router.refresh();
+        }
+      }
     } catch {
       setMessages((prev) => [
         ...prev,

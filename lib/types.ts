@@ -14,6 +14,16 @@ export interface School {
   classCount: number;
 }
 
+// One planned lesson in a class's finite roadmap. The Course Builder emits the
+// full ordered list when it creates a class; lessons are then built (as real
+// lectures) in this order, so the syllabus is both the roadmap shown to the
+// learner and the path "go deeper" follows to a real finish.
+export interface SyllabusItem {
+  title: string;
+  summary: string; // one line, what this planned lesson will cover
+  difficulty: Difficulty;
+}
+
 export interface ClassRow {
   id: number;
   school_id: number;
@@ -22,6 +32,7 @@ export interface ClassRow {
   emoji: string;
   description: string;
   objective: string; // the learner's true goal/scope — anchors "go deeper" within bounds
+  syllabus: SyllabusItem[]; // finite planned roadmap; [] for legacy classes
   lectureCount: number;
   completedCount: number;
 }

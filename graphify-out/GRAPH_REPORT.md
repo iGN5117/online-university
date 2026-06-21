@@ -1,16 +1,16 @@
-# Graph Report - Online_University  (2026-06-20)
+# Graph Report - Online_University  (2026-06-21)
 
 ## Corpus Check
-- 52 files · ~21,489 words
+- 54 files · ~27,515 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 289 nodes · 494 edges · 25 communities (16 shown, 9 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.92)
+- 322 nodes · 558 edges · 26 communities (18 shown, 8 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ff730314`
+- Built from commit: `aee80795`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,22 +33,23 @@
 - [[_COMMUNITY_Lecture Format Type|Lecture Format Type]]
 - [[_COMMUNITY_Single-User Rationale|Single-User Rationale]]
 - [[_COMMUNITY_Agent Instructions Doc|Agent Instructions Doc]]
+- [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
-- [[_COMMUNITY_Community 20|Community 20]]
-- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `getDb()` - 32 edges
+1. `getDb()` - 35 edges
 2. `getDb` - 16 edges
-3. `getClass()` - 11 edges
-4. `requireUser()` - 11 edges
-5. `executeTool()` - 10 edges
+3. `executeTool()` - 14 edges
+4. `getClass()` - 13 edges
+5. `requireUser()` - 11 edges
 6. `Session Handoff — Online University` - 10 edges
 7. `isOwnerEmail()` - 9 edges
-8. `listLectures()` - 9 edges
-9. `executeTool` - 9 edges
-10. `OwnershipError` - 8 edges
+8. `getAgentModel()` - 9 edges
+9. `listLectures()` - 9 edges
+10. `deepenClass()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Cost Minimization Design` --rationale_for--> `runAgentTurn`  [EXTRACTED]
@@ -70,39 +71,39 @@
 - **Data Retrieval & Query Layer** — data_listschools, data_listclasses, data_listlectures, data_gettestquestions, data_getcatalogsummary [INFERRED 0.85]
 - **Database Initialization & Seeding** — db_init, seed_seed, seed_insertlectures [EXTRACTED 1.00]
 
-## Communities (25 total, 9 thin omitted)
+## Communities (26 total, 8 thin omitted)
 
 ### Community 0 - "Card Viewer & Data Storage"
+Cohesion: 0.07
+Nodes (30): CardViewerProps, AddedLecture, DeepenResult, ErrorResponse, LectureCardsProps, ReelViewerProps, TestDetail, TestRunnerProps (+22 more)
+
+### Community 1 - "Companion Agent Core"
 Cohesion: 0.08
 Nodes (38): AgentAction, AgentTurnResult, executeTool, runAgentTurn, systemPrompt, addCards, addQuestions, createClass (+30 more)
 
-### Community 1 - "Companion Agent Core"
-Cohesion: 0.07
-Nodes (24): CardViewerProps, DeepenResult, ErrorResponse, LectureCardsProps, ReelViewerProps, TestDetail, TestRunnerProps, TestState (+16 more)
-
 ### Community 2 - "App Shell & Chat Panel"
-Cohesion: 0.08
-Nodes (26): ModelOption, AdminPage(), ChatTurn, POST(), POST(), AgentAction, AgentTurnResult, CARD_SCHEMA (+18 more)
+Cohesion: 0.12
+Nodes (34): POST(), AddedLecture, AgentAction, AgentTurnResult, authorPlannedLessons(), CARD_SCHEMA, deepenClass(), DeepenResult (+26 more)
 
 ### Community 3 - "Browsing Pages & Queries"
+Cohesion: 0.09
+Nodes (24): Action, AgentChat(), AgentResponse, ChatMessage, DEPTHS, ErrorResponse, LEVELS, MessageWithActions (+16 more)
+
+### Community 4 - "API Endpoints & Page Map"
 Cohesion: 0.12
 Nodes (16): DELETE(), POST(), requireOwner(), addAllowedEmail(), getOrCreateUser(), isEmailAllowed(), isOwnerEmail(), removeAllowedEmail() (+8 more)
 
-### Community 4 - "API Endpoints & Page Map"
-Cohesion: 0.2
-Nodes (21): POST(), executeTool(), addCards(), addQuestions(), createClass(), createLecture(), createSchool(), deleteLecture() (+13 more)
-
 ### Community 5 - "Class & Progress Data Access"
-Cohesion: 0.22
-Nodes (15): Home(), ClassPage(), LecturePage(), SchoolPage(), requireUser(), getClass(), getLecture(), getSchool() (+7 more)
+Cohesion: 0.18
+Nodes (18): Home(), BAND_LABEL, ClassPage(), LecturePage(), RoadmapEntry, SchoolPage(), requireUser(), getClass() (+10 more)
 
 ### Community 6 - "Content Creation (Lectures & Cards)"
-Cohesion: 0.12
-Nodes (6): geistMono, geistSans, metadata, viewport, LinkBehaviour, theme
+Cohesion: 0.15
+Nodes (12): ChatTurn, POST(), POST(), runAgentTurn(), runTeacherTurn(), wantsManagement(), markLectureComplete(), OwnershipError (+4 more)
 
 ### Community 7 - "School Management & Agent Cost Design"
-Cohesion: 0.17
-Nodes (12): Action, AgentChat(), AgentResponse, ChatMessage, ErrorResponse, MessageWithActions, STARTER_SUGGESTIONS, AgentResponse (+4 more)
+Cohesion: 0.12
+Nodes (6): geistMono, geistSans, metadata, viewport, LinkBehaviour, theme
 
 ### Community 8 - "Quiz Runner & Test Flow"
 Cohesion: 0.17
@@ -117,32 +118,40 @@ Cohesion: 0.18
 Nodes (10): 1. Google OAuth (Google Cloud Console), 2. Local dev, 3. Deploy to Fly.io, 4. Migrate existing local content (optional, one-time), 5. iPhone / PWA verification, code:bash (ANTHROPIC_API_KEY=sk-ant-...), code:bash (npm run dev), code:bash (fly auth login) (+2 more)
 
 ### Community 11 - "PostCSS Config"
+Cohesion: 0.24
+Nodes (5): ModelOption, AdminPage(), AGENT_MODELS, getAgentModel(), listAllowedEmails()
+
+### Community 12 - "ESLint Config"
 Cohesion: 0.22
 Nodes (8): code:bash (npm install), Cost design, Lecture formats, Notes, 🎓 Online University, Quick start, The Course Builder agent, What's inside
 
-### Community 12 - "ESLint Config"
+### Community 13 - "Next.js Config"
 Cohesion: 0.25
 Nodes (6): 1. Think Before Coding, 2. Simplicity First, 3. Surgical Changes, 4. Goal-Driven Execution, code:block1 (1. [Step] → verify: [check]), graphify
 
+### Community 14 - "Next Env Types"
+Cohesion: 0.33
+Nodes (5): Jun 19, 2026, Jun 20, 2026, Memory Context, [Online_University] recent context, 2026-06-20 9:28pm EDT, This is NOT the Next.js you know
+
 ## Knowledge Gaps
-- **95 isolated node(s):** `{ spawn }`, `env`, `{ auth }`, `url`, `config` (+90 more)
+- **111 isolated node(s):** `{ spawn }`, `env`, `{ auth }`, `url`, `config` (+106 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getDb()` connect `API Endpoints & Page Map` to `Companion Agent Core`, `App Shell & Chat Panel`, `Browsing Pages & Queries`, `Class & Progress Data Access`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `Lecture` connect `Companion Agent Core` to `API Endpoints & Page Map`?**
+- **Why does `getDb()` connect `App Shell & Chat Panel` to `Card Viewer & Data Storage`, `API Endpoints & Page Map`, `Class & Progress Data Access`, `Content Creation (Lectures & Cards)`, `PostCSS Config`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `getClass()` connect `Class & Progress Data Access` to `Card Viewer & Data Storage`, `App Shell & Chat Panel`, `Content Creation (Lectures & Cards)`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `{ spawn }`, `env`, `{ auth }` to the rest of the system?**
-  _95 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _111 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Card Viewer & Data Storage` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `Companion Agent Core` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
-- **Should `App Shell & Chat Panel` be split into smaller, more focused modules?**
+- **Should `Companion Agent Core` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `Browsing Pages & Queries` be split into smaller, more focused modules?**
+- **Should `App Shell & Chat Panel` be split into smaller, more focused modules?**
   _Cohesion score 0.12 - nodes in this community are weakly interconnected._
+- **Should `Browsing Pages & Queries` be split into smaller, more focused modules?**
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._

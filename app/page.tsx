@@ -6,6 +6,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import { listSchools } from "@/lib/data";
 import { requireUser } from "@/lib/auth";
+import StarterGrid from "@/components/StarterGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +17,13 @@ export default async function Home() {
   return (
     <Stack spacing={4}>
       <Typography variant="h3" sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}>
-        Pick a school. Learn one card at a time.
+        {schools.length === 0
+          ? "What do you want to learn?"
+          : "Pick a school. Learn one card at a time."}
       </Typography>
 
       {schools.length === 0 ? (
-        <Box sx={{ py: 6, textAlign: "center" }}>
-          <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
-            No schools yet. Use the ✨ chat button to create one!
-          </Typography>
-        </Box>
+        <StarterGrid />
       ) : (
         <Box
           sx={{

@@ -8,8 +8,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
+type AddedLecture = { lectureId: number; title: string; difficulty: string };
 type DeepenResult =
-  | { status: "added"; lectureId: number; title: string; difficulty: string }
+  | { status: "added"; lectures: AddedLecture[] }
   | { status: "complete"; reason: string };
 
 interface ErrorResponse {
@@ -56,8 +57,9 @@ export default function DeepenButton({
       }
       if (mode === "open") {
         // Replace (not push) so Back from the new lesson returns to the class,
-        // not the just-finished lecture's completion screen.
-        router.replace(`/lecture/${result.lectureId}`);
+        // not the just-finished lecture's completion screen. Open the first of
+        // the batch; the rest appear in the class list.
+        router.replace(`/lecture/${result.lectures[0].lectureId}`);
       } else {
         router.refresh();
       }
@@ -83,7 +85,7 @@ export default function DeepenButton({
           )
         }
       >
-        {isLoading ? "Adding a deeper lesson…" : label}
+        {isLoading ? "Adding deeper lessons…" : label}
       </Button>
       {error && (
         <Typography variant="caption" color="error" sx={{ display: "block", mt: 1 }}>

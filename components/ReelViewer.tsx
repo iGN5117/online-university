@@ -115,7 +115,11 @@ export default function ReelViewer({
     );
   }
 
-  const isLast = activeIndex === cards.length - 1;
+  // activeIndex can briefly exceed the range if the card set shrank on a
+  // refresh (e.g. the teacher edited the lesson); clamp for display until the
+  // next scroll resyncs it.
+  const safeActive = Math.min(activeIndex, cards.length - 1);
+  const isLast = safeActive === cards.length - 1;
 
   return (
     <Box sx={overlaySx}>
@@ -143,11 +147,11 @@ export default function ReelViewer({
         </IconButton>
         <LinearProgress
           variant="determinate"
-          value={((activeIndex + 1) / cards.length) * 100}
+          value={((safeActive + 1) / cards.length) * 100}
           sx={{ flex: 1, height: 6, borderRadius: 999 }}
         />
         <Typography variant="caption" color="text.secondary" sx={{ minWidth: 36, textAlign: "right" }}>
-          {activeIndex + 1}/{cards.length}
+          {safeActive + 1}/{cards.length}
         </Typography>
       </Box>
 
@@ -260,7 +264,7 @@ export default function ReelViewer({
       </Box>
 
       {/* Swipe hint on the first card */}
-      {activeIndex === 0 && cards.length > 1 && (
+      {safeActive === 0 && cards.length > 1 && (
         <Typography
           variant="caption"
           color="text.secondary"

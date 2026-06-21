@@ -2,6 +2,7 @@ import { getDb } from "./db";
 import type {
   School,
   ClassRow,
+  SyllabusItem,
   Lecture,
   LectureContent,
   LectureFormat,
@@ -238,6 +239,15 @@ export function createSchool(
     .run(userId, name, slug, emoji, description).lastInsertRowid as number;
 }
 
+export function deleteSchool(userId: number, schoolId: number): void {
+  if (!ownsSchool(userId, schoolId))
+    throw new OwnershipError(`school ${schoolId} not found`);
+  // Everything under the school — classes, lectures, questions, progress,
+  // test_attempts — cascades (FK ON DELETE CASCADE).
+  const info = getDb().prepare("DELETE FROM schools WHERE id = ?").run(schoolId);
+  if (info.changes === 0) throw new Error(`school ${schoolId} not found`);
+}
+
 // ---------- Classes ----------
 
 const CLASS_SELECT = `
@@ -248,16 +258,34 @@ const CLASS_SELECT = `
      WHERE l.class_id = c.id) AS completedCount
   FROM classes c JOIN schools s ON s.id = c.school_id`;
 
+// syllabus is stored as JSON text; parse it into SyllabusItem[] before it
+// reaches UI or agent code (tolerating malformed/empty plans as []).
+type ClassDbRow = Omit<ClassRow, "syllabus"> & { syllabus: string };
+
+function parseClass(row: ClassDbRow): ClassRow {
+  let syllabus: SyllabusItem[] = [];
+  try {
+    const parsed = JSON.parse(row.syllabus);
+    if (Array.isArray(parsed)) syllabus = parsed as SyllabusItem[];
+  } catch {
+    // leave as []
+  }
+  return { ...row, syllabus };
+}
+
 export function listClasses(schoolId: number, userId: number): ClassRow[] {
-  return getDb()
-    .prepare(`${CLASS_SELECT} WHERE c.school_id = ? AND s.user_id = ? ORDER BY c.id`)
-    .all(schoolId, userId) as ClassRow[];
+  return (
+    getDb()
+      .prepare(`${CLASS_SELECT} WHERE c.school_id = ? AND s.user_id = ? ORDER BY c.id`)
+      .all(schoolId, userId) as ClassDbRow[]
+  ).map(parseClass);
 }
 
 export function getClass(id: number, userId: number): ClassRow | undefined {
-  return getDb()
+  const row = getDb()
     .prepare(`${CLASS_SELECT} WHERE c.id = ? AND s.user_id = ?`)
-    .get(id, userId) as ClassRow | undefined;
+    .get(id, userId) as ClassDbRow | undefined;
+  return row ? parseClass(row) : undefined;
 }
 
 export function createClass(
@@ -267,6 +295,7 @@ export function createClass(
   emoji: string,
   description: string,
   objective = "",
+  syllabus: SyllabusItem[] = [],
 ): number {
   const db = getDb();
   if (!ownsSchool(userId, schoolId))
@@ -278,10 +307,19 @@ export function createClass(
   if (exists.get(schoolId, slug)) slug = `${slug}-${Date.now() % 10000}`;
   return db
     .prepare(
-      "INSERT INTO classes (school_id, name, slug, emoji, description, objective) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO classes (school_id, name, slug, emoji, description, objective, syllabus) VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
-    .run(schoolId, name, slug, emoji, description, objective)
+    .run(schoolId, name, slug, emoji, description, objective, JSON.stringify(syllabus))
     .lastInsertRowid as number;
+}
+
+export function deleteClass(userId: number, classId: number): void {
+  if (!ownsClass(userId, classId))
+    throw new OwnershipError(`class ${classId} not found`);
+  // Lectures, questions, lecture_progress and test_attempts all cascade
+  // (FK ON DELETE CASCADE).
+  const info = getDb().prepare("DELETE FROM classes WHERE id = ?").run(classId);
+  if (info.changes === 0) throw new Error(`class ${classId} not found`);
 }
 
 // ---------- Lectures ----------
@@ -446,6 +484,53 @@ export function moveLecture(
       position,
       lectureId,
     );
+  }
+}
+
+/**
+ * Edit a lecture in place. Only the provided fields change; cards and questions,
+ * when given, REPLACE the existing set wholesale (use addCards/addQuestions to
+ * append instead). Progress is left untouched — an edit may be a small fix.
+ */
+export function updateLecture(
+  userId: number,
+  lectureId: number,
+  fields: {
+    title?: string;
+    summary?: string;
+    difficulty?: Difficulty;
+    rationale?: string;
+    cards?: NewCard[];
+    questions?: NewQuestion[];
+  },
+): void {
+  const db = getDb();
+  if (!ownsLecture(userId, lectureId))
+    throw new OwnershipError(`lecture ${lectureId} not found`);
+  const row = db
+    .prepare("SELECT title, summary, content FROM lectures WHERE id = ?")
+    .get(lectureId) as
+    | { title: string; summary: string; content: string }
+    | undefined;
+  if (!row) throw new Error(`lecture ${lectureId} not found`);
+
+  const content = JSON.parse(row.content) as LectureContent;
+  if (fields.cards !== undefined) content.cards = fields.cards;
+  if (fields.difficulty !== undefined) content.difficulty = fields.difficulty;
+  if (fields.rationale !== undefined) content.rationale = fields.rationale;
+
+  db.prepare(
+    "UPDATE lectures SET title = ?, summary = ?, content = ? WHERE id = ?",
+  ).run(
+    fields.title ?? row.title,
+    fields.summary ?? row.summary,
+    JSON.stringify(content),
+    lectureId,
+  );
+
+  if (fields.questions !== undefined) {
+    db.prepare("DELETE FROM questions WHERE lecture_id = ?").run(lectureId);
+    insertQuestions(lectureId, fields.questions);
   }
 }
 

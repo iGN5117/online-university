@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -18,6 +18,14 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Tooltip from "@mui/material/Tooltip";
 import { useKeyboardInset } from "@/lib/useKeyboardInset";
+import {
+  STARTER_TEMPLATES,
+  composeBuilderPrompt,
+  OPEN_BUILDER_EVENT,
+  type Level,
+  type Depth,
+  type OpenBuilderDetail,
+} from "@/lib/templates";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -35,6 +43,15 @@ interface AgentResponse {
   actions?: Action[];
 }
 
+// True when `action` deleted the very school/class/lecture this URL is showing.
+// Delete actions carry a label like "lecture 5"/"class 3"/"school 2", which we
+// match against the entity in the path (/class/3/test still maps to "class 3").
+function deletedActionMatchesPath(pathname: string, action: Action): boolean {
+  if (action.kind !== "deleted") return false;
+  const m = pathname.match(/^\/(lecture|class|school)\/(\d+)/);
+  return !!m && action.label === `${m[1]} ${m[2]}`;
+}
+
 interface ErrorResponse {
   error: string;
 }
@@ -43,19 +60,30 @@ type MessageWithActions = ChatMessage & {
   actions?: Action[];
 };
 
-const STARTER_SUGGESTIONS = [
-  "Teach me the basics of black holes",
-  "I want to learn personal finance",
-  "Add a deeper lecture on RAG",
+const LEVELS: { value: Level; label: string }[] = [
+  { value: "new", label: "New to this" },
+  { value: "some", label: "Some background" },
+  { value: "advanced", label: "Advanced" },
+];
+
+const DEPTHS: { value: Depth; label: string }[] = [
+  { value: "overview", label: "Quick overview" },
+  { value: "solid", label: "Solid foundation" },
+  { value: "deep", label: "Go deep" },
 ];
 
 export default function AgentChat() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<MessageWithActions[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Structured intake shown on the empty state (first message only).
+  const [intakeGoal, setIntakeGoal] = useState("");
+  const [intakeLevel, setIntakeLevel] = useState<Level | null>(null);
+  const [intakeDepth, setIntakeDepth] = useState<Depth>("solid");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const keyboardInset = useKeyboardInset();
@@ -90,6 +118,22 @@ export default function AgentChat() {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  // Open + prefill when a starter elsewhere (e.g. the home page) hands a goal to
+  // the Course Builder. Sets both the intake (shown on the empty state) and the
+  // input box (shown mid-conversation) so it lands wherever the user is.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<OpenBuilderDetail>).detail;
+      setIsOpen(true);
+      if (detail?.goal) {
+        setIntakeGoal(detail.goal);
+        setInputValue(detail.goal);
+      }
+    };
+    window.addEventListener(OPEN_BUILDER_EVENT, handler);
+    return () => window.removeEventListener(OPEN_BUILDER_EVENT, handler);
+  }, []);
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -133,9 +177,15 @@ export default function AgentChat() {
         }
         setMessages((prev) => [...prev, assistantMessage]);
 
-        // Refresh server-rendered pages if there were actions
+        // Reflect the changes. If the entity in the current URL was just
+        // deleted, its page now 404s (pages call notFound()), so leave for
+        // home; otherwise re-fetch the server-rendered page in place.
         if (agentData.actions && agentData.actions.length > 0) {
-          router.refresh();
+          const viewingDeleted = agentData.actions.some((a) =>
+            deletedActionMatchesPath(pathname, a),
+          );
+          if (viewingDeleted) router.push("/");
+          else router.refresh();
         }
       }
     } catch {
@@ -154,6 +204,20 @@ export default function AgentChat() {
     setMessages([]);
     setError(null);
     setInputValue("");
+    setIntakeGoal("");
+    setIntakeLevel(null);
+    setIntakeDepth("solid");
+  };
+
+  // Compose the intake answers into a first message the builder can act on, then
+  // send it (handleSendMessage flips us out of the empty state into the chat).
+  const handleBuild = () => {
+    if (!intakeGoal.trim() || isLoading) return;
+    const prompt = composeBuilderPrompt(intakeGoal, intakeLevel, intakeDepth);
+    setIntakeGoal("");
+    setIntakeLevel(null);
+    setIntakeDepth("solid");
+    handleSendMessage(prompt);
   };
 
   // Returns a clickable chip target, or null for actions with no page to link
@@ -251,22 +315,103 @@ export default function AgentChat() {
       {/* Message List */}
       <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
         {messages.length === 0 ? (
-          <Stack spacing={1.5} sx={{ alignItems: "center", justifyContent: "center", height: "100%" }}>
-            <Typography variant="caption" color="text.secondary" sx={{ textAlign: "center", px: 1 }}>
-              Tap a suggestion to start
-            </Typography>
-            {STARTER_SUGGESTIONS.map((suggestion, idx) => (
-              <Button
-                key={idx}
-                onClick={() => handleSendMessage(suggestion)}
-                variant="outlined"
-                color="inherit"
+          <Stack spacing={2} sx={{ py: 0.5 }}>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.75 }}>
+                What do you want to learn?
+              </Typography>
+              <TextField
+                autoFocus
+                value={intakeGoal}
+                onChange={(e) => setIntakeGoal(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleBuild();
+                  }
+                }}
+                placeholder="e.g. how options trading works"
+                size="small"
                 fullWidth
-                sx={{ justifyContent: "flex-start", textAlign: "left", fontWeight: 400 }}
+                multiline
+                maxRows={3}
+              />
+            </Box>
+
+            <Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontWeight: 600 }}
               >
-                {suggestion}
-              </Button>
-            ))}
+                Your level
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mt: 0.5 }}>
+                {LEVELS.map((l) => (
+                  <Chip
+                    key={l.value}
+                    label={l.label}
+                    size="small"
+                    clickable
+                    color={intakeLevel === l.value ? "primary" : "default"}
+                    variant={intakeLevel === l.value ? "filled" : "outlined"}
+                    onClick={() =>
+                      setIntakeLevel(intakeLevel === l.value ? null : l.value)
+                    }
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontWeight: 600 }}
+              >
+                How far do you want to go?
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mt: 0.5 }}>
+                {DEPTHS.map((d) => (
+                  <Chip
+                    key={d.value}
+                    label={d.label}
+                    size="small"
+                    clickable
+                    color={intakeDepth === d.value ? "primary" : "default"}
+                    variant={intakeDepth === d.value ? "filled" : "outlined"}
+                    onClick={() => setIntakeDepth(d.value)}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Button
+              variant="contained"
+              onClick={handleBuild}
+              disabled={!intakeGoal.trim() || isLoading}
+              startIcon={<AutoAwesomeIcon />}
+            >
+              Build my class
+            </Button>
+
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                Or start from an example:
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mt: 0.75 }}>
+                {STARTER_TEMPLATES.map((t) => (
+                  <Chip
+                    key={t.title}
+                    label={`${t.emoji} ${t.title}`}
+                    size="small"
+                    variant="outlined"
+                    clickable
+                    onClick={() => setIntakeGoal(t.goal)}
+                  />
+                ))}
+              </Box>
+            </Box>
           </Stack>
         ) : (
           <Stack spacing={1.5}>
@@ -358,44 +503,47 @@ export default function AgentChat() {
         )}
       </Box>
 
-      {/* Input Row */}
-      <Box
-        sx={{
-          borderTop: 1,
-          borderColor: "divider",
-          p: 1.5,
-          display: "flex",
-          gap: 1,
-          alignItems: "center",
-        }}
-      >
-        <TextField
-          inputRef={inputRef}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => {
-            // Enter sends; Shift+Enter inserts a newline.
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              if (!isLoading) handleSendMessage(inputValue);
-            }
+      {/* Input Row — hidden on the empty state; the intake form drives the
+          first message there. */}
+      {messages.length > 0 && (
+        <Box
+          sx={{
+            borderTop: 1,
+            borderColor: "divider",
+            p: 1.5,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
           }}
-          placeholder="Tell me what to learn..."
-          disabled={isLoading}
-          size="small"
-          fullWidth
-          multiline
-          maxRows={4}
-        />
-        <IconButton
-          color="primary"
-          onClick={() => handleSendMessage(inputValue)}
-          disabled={isLoading || !inputValue.trim()}
-          aria-label="Send"
         >
-          <SendIcon />
-        </IconButton>
-      </Box>
+          <TextField
+            inputRef={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              // Enter sends; Shift+Enter inserts a newline.
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (!isLoading) handleSendMessage(inputValue);
+              }
+            }}
+            placeholder="Tell me what to learn..."
+            disabled={isLoading}
+            size="small"
+            fullWidth
+            multiline
+            maxRows={4}
+          />
+          <IconButton
+            color="primary"
+            onClick={() => handleSendMessage(inputValue)}
+            disabled={isLoading || !inputValue.trim()}
+            aria-label="Send"
+          >
+            <SendIcon />
+          </IconButton>
+        </Box>
+      )}
     </Paper>
   );
 }

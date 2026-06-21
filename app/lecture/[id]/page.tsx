@@ -103,7 +103,11 @@ export default async function LecturePage({
         />
       )}
     </Stack>
-    <TeacherChat lectureId={lecture.id} lectureTitle={lecture.title} />
+    <TeacherChat
+      lectureId={lecture.id}
+      classId={lecture.class_id}
+      lectureTitle={lecture.title}
+    />
     </>
   );
 }

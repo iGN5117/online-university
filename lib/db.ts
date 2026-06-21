@@ -42,6 +42,7 @@ function init(): Database.Database {
       emoji TEXT NOT NULL DEFAULT '📚',
       description TEXT NOT NULL DEFAULT '',
       objective TEXT NOT NULL DEFAULT '',
+      syllabus TEXT NOT NULL DEFAULT '[]',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       UNIQUE (school_id, slug)
     );
@@ -103,6 +104,13 @@ function init(): Database.Database {
   }[];
   if (!classCols.some((c) => c.name === "objective")) {
     db.exec("ALTER TABLE classes ADD COLUMN objective TEXT NOT NULL DEFAULT ''");
+  }
+
+  // Migration: add classes.syllabus (the finite planned roadmap of lessons that
+  // cover the objective) to DBs created before it existed. Legacy classes keep
+  // an empty plan and fall back to free-form "go deeper".
+  if (!classCols.some((c) => c.name === "syllabus")) {
+    db.exec("ALTER TABLE classes ADD COLUMN syllabus TEXT NOT NULL DEFAULT '[]'");
   }
 
   // Migration: add schools.user_id to DBs created before multi-user support.

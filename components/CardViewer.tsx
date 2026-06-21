@@ -33,18 +33,30 @@ export default function CardViewer({
 
   const cards = lecture.content.cards || [];
 
-  const currentCard = cards[currentIndex];
-  const isLastCard = currentIndex === cards.length - 1;
+  // Cards can shrink under us (e.g. the teacher edits the lesson and the page
+  // refreshes), leaving currentIndex past the end. Render from a clamped index
+  // so we never read an undefined card and crash.
+  const safeIndex = Math.min(currentIndex, cards.length - 1);
+  const currentCard = cards[safeIndex];
+  const isLastCard = safeIndex === cards.length - 1;
+
+  // Keep the stored index in range when the card count changes.
+  useEffect(() => {
+    if (cards.length > 0 && currentIndex > cards.length - 1) {
+      setCurrentIndex(cards.length - 1);
+      setRevealed(false);
+    }
+  }, [cards.length, currentIndex]);
 
   const handleNext = () => {
     if (isLastCard) return;
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex(safeIndex + 1);
     setRevealed(false);
   };
 
   const handlePrev = () => {
-    if (currentIndex === 0) return;
-    setCurrentIndex(currentIndex - 1);
+    if (safeIndex === 0) return;
+    setCurrentIndex(safeIndex - 1);
     setRevealed(false);
   };
 
@@ -162,7 +174,7 @@ export default function CardViewer({
     <Stack spacing={3}>
       <LinearProgress
         variant="determinate"
-        value={((currentIndex + 1) / cards.length) * 100}
+        value={((safeIndex + 1) / cards.length) * 100}
         sx={{ height: 6, borderRadius: 999 }}
       />
 
@@ -259,7 +271,7 @@ export default function CardViewer({
         <Stack direction="row" spacing={1.5} sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <Button
             onClick={handlePrev}
-            disabled={currentIndex === 0}
+            disabled={safeIndex === 0}
             variant="outlined"
             startIcon={<ArrowBackIcon />}
           >
@@ -267,7 +279,7 @@ export default function CardViewer({
           </Button>
 
           <Typography variant="body2" color="text.secondary">
-            {currentIndex + 1} / {cards.length}
+            {safeIndex + 1} / {cards.length}
           </Typography>
 
           {isLastCard ? (
