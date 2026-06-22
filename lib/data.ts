@@ -313,6 +313,24 @@ export function createClass(
     .lastInsertRowid as number;
 }
 
+/**
+ * Replace a class's finite syllabus (the planned roadmap). createClass only sets
+ * it at creation, so this is how a roadmap is backfilled onto a legacy class that
+ * was made before syllabi existed. Ownership-guarded like the other class mutators.
+ */
+export function setClassSyllabus(
+  userId: number,
+  classId: number,
+  items: SyllabusItem[],
+): void {
+  if (!ownsClass(userId, classId))
+    throw new OwnershipError(`class ${classId} not found`);
+  const info = getDb()
+    .prepare("UPDATE classes SET syllabus = ? WHERE id = ?")
+    .run(JSON.stringify(items), classId);
+  if (info.changes === 0) throw new Error(`class ${classId} not found`);
+}
+
 export function deleteClass(userId: number, classId: number): void {
   if (!ownsClass(userId, classId))
     throw new OwnershipError(`class ${classId} not found`);

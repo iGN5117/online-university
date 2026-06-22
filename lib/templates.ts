@@ -67,17 +67,24 @@ const DEPTH_PHRASE: Record<Depth, string> = {
   deep: "Take me all the way to mastery.",
 };
 
-// Turns the intake answers into a first message the Course Builder can act on
-// immediately (it builds without further questions when given enough).
+// Turns the intake answers into the first message for the Course Builder. With a
+// level or depth selected it's a build request ("I want to learn ...", plus the
+// chosen framing, which lets the builder act without further questions). With
+// BOTH cleared, the text is sent verbatim — so the same box doubles as a raw
+// instruction for edits/deletes ("delete the Cricket class") instead of the
+// "I want to learn" wrapper turning every message into a build.
 export function composeBuilderPrompt(
   goal: string,
   level: Level | null,
-  depth: Depth,
+  depth: Depth | null,
 ): string {
+  const trimmed = goal.trim();
+  // No level/depth chosen → not a learning request; pass the text through as-is.
+  if (!level && !depth) return trimmed;
   return [
-    `I want to learn ${goal.trim()}.`,
+    `I want to learn ${trimmed}.`,
     level ? LEVEL_PHRASE[level] : "",
-    DEPTH_PHRASE[depth],
+    depth ? DEPTH_PHRASE[depth] : "",
   ]
     .filter(Boolean)
     .join(" ");

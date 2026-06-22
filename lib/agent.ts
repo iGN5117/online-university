@@ -14,6 +14,7 @@ import {
   getLecture,
   getClass,
   listLectures,
+  setClassSyllabus,
   getAgentModel,
   OwnershipError,
 } from "./data";
@@ -39,8 +40,11 @@ const MAX_ITERATIONS = 8;
 // All DEEPEN_COUNT lessons are produced in a SINGLE model turn (one ordered
 // batch) — faster and cheaper than separate calls, which also share less context.
 // The batch needs a bigger output budget than a normal single-lecture turn.
+// These calls STREAM (client.messages.stream + finalMessage), so a large budget
+// won't trip an SDK HTTP timeout the way a non-streaming request would; 32000 is
+// safe across every runtime-switchable model (Haiku 4.5's 64K output is the floor).
 const DEEPEN_COUNT = 5;
-const DEEPEN_MAX_TOKENS = 16384;
+const DEEPEN_MAX_TOKENS = 32000;
 
 // Web search is a server-side tool: it runs on Anthropic's side and results come
 // back inline in the same response (no client execution). The basic version is
@@ -811,13 +815,18 @@ You may search the web first when a lesson needs current facts or specifics you'
   // Loop so the model can optionally web-search before committing its lessons.
   let toolUse: Anthropic.ToolUseBlock | undefined;
   for (let i = 0; i < MAX_ITERATIONS && !toolUse; i++) {
-    const response = await client.messages.create({
-      model: getAgentModel(),
-      max_tokens: DEEPEN_MAX_TOKENS,
-      system,
-      tools: [authorTool, WEB_SEARCH_TOOL],
-      messages,
-    });
+    // Stream to keep the large DEEPEN_MAX_TOKENS budget under the SDK timeout.
+    // finalMessage() still carries stop_reason/content, so the pause_turn loop
+    // and the tool-use extraction below are unchanged.
+    const response = await client.messages
+      .stream({
+        model: getAgentModel(),
+        max_tokens: DEEPEN_MAX_TOKENS,
+        system,
+        tools: [authorTool, WEB_SEARCH_TOOL],
+        messages,
+      })
+      .finalMessage();
 
     if (response.stop_reason === "pause_turn") {
       messages.push({ role: "assistant", content: response.content });
@@ -996,13 +1005,18 @@ You may search the web first when the lessons need current facts or specifics yo
   // the nudge below keeps the model from stalling without a decision.
   let toolUse: Anthropic.ToolUseBlock | undefined;
   for (let i = 0; i < MAX_ITERATIONS && !toolUse; i++) {
-    const response = await client.messages.create({
-      model: getAgentModel(),
-      max_tokens: DEEPEN_MAX_TOKENS,
-      system,
-      tools: [createTool, completeTool, WEB_SEARCH_TOOL],
-      messages,
-    });
+    // Stream to keep the large DEEPEN_MAX_TOKENS budget under the SDK timeout.
+    // finalMessage() still carries stop_reason/content, so the pause_turn loop
+    // and the tool-use extraction below are unchanged.
+    const response = await client.messages
+      .stream({
+        model: getAgentModel(),
+        max_tokens: DEEPEN_MAX_TOKENS,
+        system,
+        tools: [createTool, completeTool, WEB_SEARCH_TOOL],
+        messages,
+      })
+      .finalMessage();
 
     if (response.stop_reason === "pause_turn") {
       messages.push({ role: "assistant", content: response.content });
@@ -1062,4 +1076,89 @@ You may search the web first when the lessons need current facts or specifics yo
     };
   }
   return { status: "added", lectures };
+}
+
+/**
+ * Backfill a finite syllabus onto a legacy class that has none, so it gains the
+ * roadmap / milestones / progress-to-done view that new classes get for free.
+ *
+ * The lessons already built become the FIRST, fixed part of the roadmap —
+ * verbatim and in ladder order — so the positional syllabus↔lecture mapping
+ * (slot N = the Nth built lesson) holds exactly. The model only plans the
+ * REMAINING lessons that complete the objective from where the built ones leave
+ * off. One cheap, small-output call (titles/summaries/difficulty only — no card
+ * content), so it stays non-streaming at MAX_TOKENS. Persists and returns the
+ * combined roadmap; no-ops (returns the existing plan) if the class already has one.
+ */
+export async function generateClassSyllabus(
+  classId: number,
+  userId: number,
+): Promise<SyllabusItem[]> {
+  const cls = getClass(classId, userId);
+  if (!cls) throw new OwnershipError(`class ${classId} not found`);
+  if (cls.syllabus.length > 0) return cls.syllabus;
+
+  // Same boundary fallback deepenClass uses, since legacy classes may lack an objective.
+  const objective = cls.objective?.trim() || cls.description?.trim() || cls.name;
+
+  // listLectures applies the difficulty-ladder ordering; this fixes the slot order.
+  const built: SyllabusItem[] = listLectures(classId, userId).map((l) => ({
+    title: l.title,
+    summary: l.summary,
+    difficulty: l.content.difficulty ?? "Beginner",
+  }));
+
+  const builtList =
+    built
+      .map((b, i) => `${i + 1}. ${b.title} — ${b.summary} [${b.difficulty}]`)
+      .join("\n") || "(none yet)";
+
+  const planTool: Anthropic.Tool = {
+    name: "plan_remaining_lessons",
+    description:
+      "Return the remaining planned lessons that complete the class objective, after the ones already built. Ordered, climbing the difficulty ladder. Return an empty array if the built lessons already cover the objective in full.",
+    input_schema: {
+      type: "object",
+      properties: {
+        lessons: {
+          type: "array",
+          items: SYLLABUS_ITEM_SCHEMA,
+          description:
+            "The remaining lessons (0 or more) that, following the ones already built, make the roadmap fully cover the objective. Don't repeat built lessons; don't pad with tangents.",
+        },
+      },
+      required: ["lessons"],
+    },
+  };
+
+  const system = `You are planning the finite roadmap for the class "${cls.name}" on Online University, a bite-size card-based learning platform.
+
+THE CLASS OBJECTIVE (the boundary — the roadmap covers exactly this, no more):
+${objective}
+
+Lessons already built (these are FIXED as the start of the roadmap — do not repeat or rename them):
+${builtList}
+
+Plan the REMAINING lessons that, following the ones above, make the roadmap fully cover the objective and then stop. Each lesson gets a title, a one-line summary, and a difficulty (Beginner/Intermediate/Advanced/Expert), ordered as a progression that climbs the ladder from where the built lessons leave off. Size the WHOLE roadmap to the objective (a focused topic ≈ 5-8 lessons total including the built ones; a whole book/course ≈ 8-15) — don't pad with tangents, don't stop short. If the built lessons already cover the objective in full, return an empty list.`;
+
+  const client = new Anthropic();
+  const response = await client.messages.create({
+    model: getAgentModel(),
+    max_tokens: MAX_TOKENS,
+    system,
+    tools: [planTool],
+    tool_choice: { type: "tool", name: "plan_remaining_lessons" },
+    messages: [{ role: "user", content: "Plan the remaining lessons now." }],
+  });
+
+  const toolUse = response.content.find(
+    (b): b is Anthropic.ToolUseBlock =>
+      b.type === "tool_use" && b.name === "plan_remaining_lessons",
+  );
+  const remaining =
+    (toolUse?.input as { lessons?: SyllabusItem[] } | undefined)?.lessons ?? [];
+
+  const syllabus = [...built, ...remaining];
+  setClassSyllabus(userId, classId, syllabus);
+  return syllabus;
 }

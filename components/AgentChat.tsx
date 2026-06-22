@@ -83,7 +83,7 @@ export default function AgentChat() {
   // Structured intake shown on the empty state (first message only).
   const [intakeGoal, setIntakeGoal] = useState("");
   const [intakeLevel, setIntakeLevel] = useState<Level | null>(null);
-  const [intakeDepth, setIntakeDepth] = useState<Depth>("solid");
+  const [intakeDepth, setIntakeDepth] = useState<Depth | null>("solid");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const keyboardInset = useKeyboardInset();
@@ -237,6 +237,11 @@ export default function AgentChat() {
     return { url, emoji, label: action.label };
   };
 
+  // Empty-state mode: with both level and depth cleared, the intake is a raw
+  // command (edit/delete/etc.) rather than a class build — the labels, prompt,
+  // and button below all adapt so the same box reads coherently for both.
+  const isCommandMode = intakeLevel === null && intakeDepth === null;
+
   // Collapsed state - floating action button
   if (!isOpen) {
     return (
@@ -318,7 +323,9 @@ export default function AgentChat() {
           <Stack spacing={2} sx={{ py: 0.5 }}>
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.75 }}>
-                What do you want to learn?
+                {isCommandMode
+                  ? "What do you want to do?"
+                  : "What do you want to learn?"}
               </Typography>
               <TextField
                 autoFocus
@@ -330,7 +337,11 @@ export default function AgentChat() {
                     handleBuild();
                   }
                 }}
-                placeholder="e.g. how options trading works"
+                placeholder={
+                  isCommandMode
+                    ? "e.g. delete the Cricket class"
+                    : "e.g. how options trading works"
+                }
                 size="small"
                 fullWidth
                 multiline
@@ -380,7 +391,9 @@ export default function AgentChat() {
                     clickable
                     color={intakeDepth === d.value ? "primary" : "default"}
                     variant={intakeDepth === d.value ? "filled" : "outlined"}
-                    onClick={() => setIntakeDepth(d.value)}
+                    onClick={() =>
+                      setIntakeDepth(intakeDepth === d.value ? null : d.value)
+                    }
                   />
                 ))}
               </Box>
@@ -390,9 +403,9 @@ export default function AgentChat() {
               variant="contained"
               onClick={handleBuild}
               disabled={!intakeGoal.trim() || isLoading}
-              startIcon={<AutoAwesomeIcon />}
+              startIcon={isCommandMode ? <SendIcon /> : <AutoAwesomeIcon />}
             >
-              Build my class
+              {isCommandMode ? "Send" : "Build my class"}
             </Button>
 
             <Box>
@@ -407,7 +420,12 @@ export default function AgentChat() {
                     size="small"
                     variant="outlined"
                     clickable
-                    onClick={() => setIntakeGoal(t.goal)}
+                    onClick={() => {
+                      setIntakeGoal(t.goal);
+                      // A template is a learn request: leave "command mode" so it
+                      // sends as a build, not a raw instruction.
+                      if (isCommandMode) setIntakeDepth("solid");
+                    }}
                   />
                 ))}
               </Box>
